@@ -9,18 +9,18 @@ docs_dir: docs
 pages:
 - Home: 'index.md'
 - Toolkits:
-  - XCBC: 'toolkits/xcbc.md'
-      - Virtual Machine Tutorial: 'toolkits/xcbc-installation.md'
-      - GPU Node Build: 'toolkits/gpu-nodes.md'
-      - Compute Node Modification: 'toolkits/compute-node-mods.md'
-      - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
-  - Cluster Monitoring Toolkit: 'toolkits/clustermon.md'
-      - Installation: 'toolkits/clustermon-installation.md'
-      - Configuration: 'toolkits/clustermon-config.md'
-  - XNIT: 'toolkits/xnit.md'
-      - Installation: 'toolkits/xnit-installation.md'
-  - Jetstream VC: 'toolkits/vc.md'
-      - Installation: 'toolkits/vc-installation.md'
+  - XCBC: 
+    - Virtual Machine Tutorial: 'toolkits/xcbc-installation.md'
+    - GPU Node Build: 'toolkits/gpu-nodes.md'
+    - Compute Node Modification: 'toolkits/compute-node-mods.md'
+    - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
+  - Cluster Monitoring Toolkit: 
+    - Installation: 'toolkits/clustermon-installation.md'
+    - Configuration: 'toolkits/clustermon-config.md'
+  - XNIT: 
+    - Installation: 'toolkits/xnit-installation.md'
+  - Jetstream VC: 
+    - Installation: 'toolkits/vc-installation.md'
 - Contact Us: 'contact-us.md'
 
 theme: readthedocs
@@ -30,5 +30,5 @@ theme: readthedocs
 
 markdown_extensions:
   - toc:
-     permalink: 
-- admonition
+     permalink: True
+  - admonition
