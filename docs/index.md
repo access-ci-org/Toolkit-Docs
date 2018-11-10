@@ -58,5 +58,4 @@ Learned. These site visits are funded by XSEDE, including staff travel and
 lodgings.
 
 ## Presentations
-Slides from our SC18 booth presentation [are available here]
-(https://github.com/XSEDE/XCRI-Docs/raw/master/files/SC18-XCRI-Booth-Talk.pdf).
+Slides from our SC18 booth presentation [are available here](https://github.com/XSEDE/XCRI-Docs/raw/master/files/SC18-XCRI-Booth-Talk.pdf).
