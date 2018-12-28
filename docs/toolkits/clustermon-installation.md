@@ -15,7 +15,7 @@ working to improve the general health of your research computing program.
 If you run into any problems with this guide, please contact us at
 help@xsede.org.
 
-## Installation
+## Ansible Playbook
 
 The main playbook here is split between two roles, one for Ganglia, and one for OpenXDMoD.
 
