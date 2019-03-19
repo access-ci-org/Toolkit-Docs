@@ -14,7 +14,7 @@ pages:
     - GPU Node Build: 'toolkits/gpu-nodes.md'
     - Compute Node Modification: 'toolkits/compute-node-mods.md'
     - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
-    - AD Integration: 'ActiveDirectoryIntegration.md'
+    - AD Integration: 'toolkits/ActiveDirectoryIntegration.md'
   - Cluster Monitoring Toolkit: 
     - Installation: 'toolkits/clustermon-installation.md'
     - Configuration: 'toolkits/clustermon-config.md'
