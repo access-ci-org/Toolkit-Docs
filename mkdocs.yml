@@ -12,7 +12,7 @@ pages:
   - XCBC: 
     - Virtual Machine Tutorial: 'toolkits/xcbc-installation.md'
     - GPU Node Build: 'toolkits/gpu-nodes.md'
-    - Compute Node Modification: 'toolkits/compute-node-mods.md'
+    - Custom Node Images: 'toolkits/xcbc-new-image.md'
     - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
     - AD Integration: 'toolkits/ActiveDirectoryIntegration.md'
   - Cluster Monitoring Toolkit: 
