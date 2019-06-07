@@ -74,6 +74,21 @@ OS = Operating System
 
 HPC = High Performance Computing/Cluster/Computer
 
+Initial Setup On Hardware
+===========================
+
+For this guide, we're assuming you have access to three physical machines:
+One for the headnode, and two computes. The headnode should have at least
+30GB of disk space, and 4GB of RAM, and each compute should have at least
+4GB of RAM - local disk is optional. We're not setting up a secondary
+storage network here, so a single NIC per node is sufficient, but having two
+on the headnode would allow you to work remotely through ssh.
+
+For the internal network, a "dumb" ethernet switch is all that's needed.
+Before beginning the OS installation on the headnode, install ethernet
+cables between the all nodes and your switch. The rest of the network
+configuration will take place during the OS installation.
+
 Initial Setup On VirtualBox
 ===========================
 
@@ -103,7 +118,6 @@ run these roles against the headnode remotely.
 Use the DHCP server provided by Virtualbox; you will find the ip address given to
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
-
 
 For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet

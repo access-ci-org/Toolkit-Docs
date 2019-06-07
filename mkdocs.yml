@@ -10,7 +10,7 @@ pages:
 - Home: 'index.md'
 - Toolkits:
   - XCBC: 
-    - Virtual Machine Tutorial: 'toolkits/xcbc-installation.md'
+    - Installation Tutorial: 'toolkits/xcbc-installation.md'
     - GPU Node Build: 'toolkits/gpu-nodes.md'
     - Custom Node Images: 'toolkits/xcbc-new-image.md'
     - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
