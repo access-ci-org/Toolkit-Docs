@@ -514,7 +514,7 @@ you should see a basic login prompt for each), double-check that you are able to
 ssh into the machines as root. 
 
 Now, in order to test the scheduler, it is necessary to add a user, by running
-`useradd testuser` on the headnode.
+`useradd test-user` on the headnode.
 To make sure the new user will be enabled on the compute node, run
 `wwsh file sync` to update the passwd,group, and shadow files in the Warewulf
 database, followed by 
@@ -522,7 +522,7 @@ database, followed by
 to request that the compute nodes pull the files from the master. While they are automatically
 synced every 5 minutes, this will force an update immediately.
 
-Next, become the new user, via `su - testuser`.
+Next, become the new user, via `su - test-user`.
 
 
 Open your text editor of choice, and create a (very) simple slurm batch file
@@ -543,12 +543,12 @@ Submit this to the scheduler via
 You should receive a message like `Submitted batch job 2` and find an output
 file called `nodes.out` with the contents:
 ```
-[testuser@headnode ~]$ cat nodes.out 
+[test-user@headnode ~]$ cat nodes.out 
 compute-0
 0: compute-0
 1: compute-1
-0: /home/testuser
-1: /home/testuser
+0: /home/test-user
+1: /home/test-user
 ```
 
 Otherwise, there should be useful debugging information in /var/log/slurmctld 
