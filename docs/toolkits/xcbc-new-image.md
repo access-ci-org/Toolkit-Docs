@@ -56,9 +56,14 @@ directories into the chroot environment.
 Make sure you'll be able to ssh over to the new image:
 ``` cp /root/.ssh/authorized_keys /opt/ohpc/admin/images/new-image/root/.ssh/authorized_keys ```
 
-Also, copy over your default /etc/fstap for your environment:
+Also, copy over your default /etc/fstab for your environment:
 ```cp /opt/ohpc/admin/images/centos7-compute/etc/fstab /opt/ohpc/admin/images/new-image/root/.ssh/authorized_keys ```
 (for example).
+
+You may also need to enable any important services in the chroot environment, so that they will start during
+the stateless boot. This include things like slurmd, chrony, and munge in particular.
+```chroot /opt/ohpc/admin/images/new-image ```
+```systemctl enable slurmd chronyd munge```
 
 Once you've installed all the customized software you'll need, you can create the new VNFS via:
 ``` wwvnfs -y --chroot /opt/ohpc/admin/images/new-image ```
