@@ -1,4 +1,4 @@
-#XCRI Documentation
+# XCRI Documentation
 
 This repo contains the markdown for 
 <https://xcri-docs.readthedocs.io>
