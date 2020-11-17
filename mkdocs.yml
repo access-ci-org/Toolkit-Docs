@@ -23,7 +23,7 @@ pages:
   - Jetstream VC: 
     - Installation: 'toolkits/vc-installation.md'
   - Container Template Library: 'toolkits/ctl/ctl.md'
-    - Quick Start Guide: 'toolkits/ctl/ctl_quick.md'
+    - Quick Start Guide: 'toolkits/ctl/ctlquick.md'
 - Contact Us: 'contact-us.md'
 - Contributing: 'contributions.md'
 
