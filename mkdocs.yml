@@ -18,8 +18,6 @@ pages:
   - Cluster Monitoring Toolkit: 
     - Installation: 'toolkits/clustermon-installation.md'
     - Configuration: 'toolkits/clustermon-config.md'
-  - XNIT: 
-    - Installation: 'toolkits/xnit-installation.md'
   - Jetstream VC: 
     - Installation: 'toolkits/vc-installation.md'
   - Container Template Library: 'toolkits/ctl/ctl.md'
