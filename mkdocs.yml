@@ -22,6 +22,8 @@ pages:
     - Installation: 'toolkits/vc-installation.md'
   - Container Template Library: 'toolkits/ctl/ctl.md'
     - Quick Start Guide: 'toolkits/ctl/ctlquick.md'
+  - OpenStack Installation:
+    - Openstack Installation Guide: 'toolkits/OpenstackInstallation.md'
 - Contact Us: 'contact-us.md'
 - Contributing: 'contributions.md'
 
