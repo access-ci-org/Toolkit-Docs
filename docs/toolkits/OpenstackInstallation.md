@@ -13,17 +13,8 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
  Make sure your `/etc/hosts` on all the nodes to contain the address and hostname of the controller, hosts, and storage nodes (if applicable).  The hostname 'controller' has to be setup and linked to the headnode IP.  A basic visual looks like this:
 
 
-``` mermaid
-graph TD
-A[Internet] --> |Public IP|B[Headnode/Controller]
-A --> |Provider Network | C[Host 1]
-A --> |Provider Network | D[Host 2]
-A --> |Provider Network | E[Host 3]
+![Screen Shot 2021-03-22 at 3 53 32 PM](https://user-images.githubusercontent.com/25777919/112050102-d7c59380-8b26-11eb-9af2-68b1431c4e41.png)
 
-B --> | Management Network | C
-B --> | Management Network | D
-B --> | Management Network | E
-```
 
 
 ###  Headnode setup/configuratiion 
