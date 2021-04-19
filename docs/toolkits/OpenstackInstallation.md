@@ -158,7 +158,7 @@ First, we need to create the databases for the services in mariadb.  For this pa
 
 On the controller, connect to mysql:
 ``` bash
-	mysql -u root -p
+	mysql
 ```
 
 and input your mysql password.
@@ -170,7 +170,7 @@ When you access the client, run:
 	GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'KEYSTONE_DBPASS';
 
 	CREATE DATABASE glance;
-	GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY 'GLANCE_DBPASS'
+	GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY 'GLANCE_DBPASS';
 	GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY 'GLANCE_DBPASS';
 
 	CREATE DATABASE nova_api;
@@ -199,7 +199,7 @@ then exit the database client.
 
 Install necessary packages by running:
 ``` bash
-	yum installl openstack-keystone httpd mod_wsgi
+	apt install keystone
 ```
 
   Then edit /etc/keystone/keystone.conf to contain the following:
@@ -213,12 +213,12 @@ Install necessary packages by running:
 	provider = fernet
 ```
 
-  Then populate the identity service database:
+  Then populate the identity service database by running the following on the command line:
 ``` bash
 	su -s /bin/sh -c "keystone-manage db_sync" keystone
 ```
 
-  Then init the fernet key repos:
+  Then initialize the fernet key repos:
 ``` bash
 	keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
 	keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
@@ -229,20 +229,14 @@ Install necessary packages by running:
 	keystone-manage bootstrap --bootstrap-password ADMIN_PASS --bootstrap-admin-url http://controller:5000/v3/  --bootstrap-internal-url http://controller:5000/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 ```
 
-  edit the /etc/httpd/conf/httpd.conf to include:
+  edit the /etc/apache2/apache2.conf file to include:
 ```
 	ServerName controller
 ```
 
-  Link wgsi-keystone.conf to the httpd dir:
-```
-	ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
-```
-
   Run:
 ``` bash
-	systemctl enable httpd.service
-	systemctl start httpd.service
+	service apache2 restart
 ```
 
   Now, create a file called admin-openrc.sh in your home directory with the following:
@@ -256,7 +250,6 @@ Install necessary packages by running:
 	export OS_IDENTITY_API_VERSION=3
 ```
 
-
   Now if you run:
 ``` bash
 	source admin-openrc.sh
@@ -264,16 +257,16 @@ Install necessary packages by running:
 
   You will be able to run openstack commands as the administrator.
 
-  Now we need to create a few openstack pieces to get started.  Run:
+  Now we need to create a few openstack pieces to get started. First, we need a service project to allow a space for service users to exist as well as a demo project for testing.  Run:
 ``` bash
 	openstack project create --domain default --description "Service Project" service
 	openstack project create --domain default --description "Demo Project" myproject
 	openstack user create --domain default --password-prompt myuser
 ```
 
-  This last command will ask for a password for the openstack user "myuser"
+  This last command will ask for a password for the openstack user "myuser".
 
-  Run:
+  Now we need a role for our new user.  You can name this myrole or something indicative of a user role.  Then we will apply a role assocation so that the myuser is in the myproject project. Run:
 ``` bash
 	openstack role create myrole
 	openstack role add --project myproject --user myuser myrole
@@ -281,16 +274,16 @@ Install necessary packages by running:
 
   Now, we have added a user "myuser" to the project "myproject".  You can login with this user by creating an openrc.sh file with the following:
 ```
-	export OS_USERNAME=myuser
-        export OS_PASSWORD={PASSWORD ENTERED AT PROMPT}
-        export OS_PROJECT_NAME=myproject
-        export OS_USER_DOMAIN_NAME=Default
-        export OS_PROJECT_DOMAIN_NAME=Default
-        export OS_AUTH_URL=http://controller:5000/v3
-        export OS_IDENTITY_API_VERSION=3
+  export OS_USERNAME=myuser
+  export OS_PASSWORD={PASSWORD ENTERED AT PROMPT}
+  export OS_PROJECT_NAME=myproject
+  export OS_USER_DOMAIN_NAME=Default
+  export OS_PROJECT_DOMAIN_NAME=Default
+  export OS_AUTH_URL=http://controller:5000/v3
+  export OS_IDENTITY_API_VERSION=3
 ```
 
-  Be sure to change the OS_PASSWORD to the password you entered when you created the "myuser" in openstack.
+  Be sure to change the OS_PASSWORD to the password you entered when you created the "myuser" in openstack user create command.
 
 
 Now we need to create some service accounts for the openstack services.
@@ -303,7 +296,7 @@ First run:
   Then we can run:
 ``` bash
 	openstack user create --domain default --password-prompt glance
-``
+```
 
   This will ask for a password.  Enter a password for the glance user, and then run:
 ``` bash
