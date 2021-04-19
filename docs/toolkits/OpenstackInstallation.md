@@ -1,14 +1,14 @@
-#  Installing Openstack (Rocky)  
+#  Installing Openstack (Victoria)  
 
-This is a basic walkthrough of installing Openstack.  I do not recommend using this for production, but exclusively as a proof of concept installation.
+This is a basic walkthrough of installing Openstack.  
 
 ## Pre-Requirements:
-  This assumes you you are running a cluster with CentOS-7 with working networking.  The installation should be similar for debian based distros, but the commands will be different, i.e. apt-get, etc.
+  This guide will assume you you are running a cluster with Ubuntu 20 with operational networking.  The installation should be similar for RHEL based distributions but the commands will be different, i.e. dnf, etc.
 
 ---
 
- Openstack uses a significant number of passwords.  Each service has about 2.  You can generate a password by using:   `openssl rand -hex 10`
-	For this tutorial, I recommend using the same password for all the services and a different password for all database passwords.
+ Openstack uses a significant number of passwords.  Each service has about generally has a database password and a service user password.  You can generate a password by using:   `openssl rand -hex 10`
+ These passwords will be stored in plaintext in the .conf files of the respective service on the controller nodes.
 
  Make sure your `/etc/hosts` on all the nodes to contain the address and hostname of the controller, hosts, and storage nodes (if applicable).  The hostname 'controller' has to be setup and linked to the headnode IP.  A basic visual looks like this:
 
@@ -17,26 +17,29 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 
 
 
-###  Headnode setup/configuratiion 
+###  Headnode setup/configuration
  On the headnode, run the following:
 ``` bash
-	yum install chrony centos-release-openstack-rocky mariadb mariadb-server memcached python-memcached etcd wget qemu-img
+  apt install chrony mariadb-server memcached python-memcached wget qemu-img
+  add-apt-repository cloud-archive:victoria
+  add-apt-repository universe
+  apt update
+  apt dist-upgrade
 ```
 
 ``` bash
-	yum install rabbitmq-server python2-PyMySQL openstack-selinux python-openstackclient
+	apt install rabbitmq-server python3-PyMySQL openstack-selinux python3-openstackclient etcd
 ```
 
-  Edit the `/etc/chrony.conf` file to include:
+  Edit the `/etc/chrony.conf` file to include your NTP server.  For this example we use Google's public NTP server and allow the subnet 10.0.0.0/16 to use this server as a chronyc source:
 ```
-	server 129.79.1.1 iburst
+	server time.google.com iburst
 	allow 10.0.0.0/16
 ```
 
   Run:
-``` bash 
-	systemctl enable chronyd.service
-	systemctl start chronyd.service
+``` bash
+	service chronyd restart
 ```
 
   You can verify by running:
@@ -44,7 +47,7 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 	chronyc sources
 ```
 
-  Create and edit /etc/my.cnf.d/openstack.cnf to include:
+  Create and edit /etc/mysql/mariadb.conf.d/99-openstack.cnf to include:
 ```
 	[mysqld]
 	bind-address = 10.0.0.10
@@ -59,16 +62,15 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 
   Run:
 ``` bash
-	systemctl enable mariadb.service
-	systemctl start mariadb.service
+  service mysql restart
 	mysql_secure_installation
 ```
 
-  mariadb probably won't read the config file for some reason, so run:
+  verify you have the correct number of max connections set in mariadb with the following:
 ``` bash
 	mysql -u root -p
 ```
-  enter your db password then:
+  Enter your db password then:
 ``` mysql
 	SHOW VARIABLES LIKE "max_connections";
 ```
@@ -77,46 +79,33 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 	SET GLOBAL max_connections = 4096;
 ```
 
-  also run:
+  Add the openstack user to rabbitmq and set that user to have configuration, write, and read permissions with the following:
 ``` bash
-	systemctl enable rabbitmq-server.service
-	systemctl start rabbitmq-server.service
+  rabbitmqctl add_user openstack {Rabbit_Password}
+  rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 ```
 
-  add the openstack user to rabbitmq:
+  edit /etc/memecached.conf to configure the service to use the management IP of the controller node:
+```
+	OPTIONS="-l 10.0.0.10,::1,controller"
+```
+
+  Restart memcached by running:
 ``` bash
-	rabbitmqctl add_user openstack {Rabbit_Password}
+	service memcached restart
 ```
 
-  add permissions for the openstack user:
-``` bash
-	rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+  edit /etc/default/etcd to include:
 ```
-
-  edit /etc/sysconfig/memecached to include:
-``` 
-	OPTIONS="-l 127.0.0.1,::1,controller"
-```
-
-  run:
-``` bash
-	systemctl enable memcached.service
-	systemctl start memcached.service
-```
-
-  edit /etc/etcd/etcd.conf to include:
-```
-	#[Member]
-	ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
-	ETCD_LISTEN_PEER_URLS="http://192.168.0.10:2380"
-	ETCD_LISTEN_CLIENT_URLS="http://192.168.0.10:2379"
-	ETCD_NAME="controller"
-	#[Clustering]
-	ETCD_INITIAL_ADVERTISE_PEER_URLS="http://192.168.0.10:2380"
-	ETCD_ADVERTISE_CLIENT_URLS="http://192.168.0.10:2379"
-	ETCD_INITIAL_CLUSTER="controller=http://192.168.0.10:2380"
-	ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"
-	ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_NAME="controller"
+ETCD_DATA_DIR="/var/lib/etcd"
+ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"
+ETCD_INITIAL_CLUSTER="controller=http://10.0.0.10:2380"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://10.0.0.10:2380"
+ETCD_ADVERTISE_CLIENT_URLS="http://10.0.0.10:2379"
+ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
+ETCD_LISTEN_CLIENT_URLS="http://10.0.0.10:2379"
 ```
 
   run:
@@ -126,12 +115,16 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 ```
 
 
+### Compute node pre-requirement setup/configuration
+---
+
  On the compute nodes, run the following:
 ``` bash
-	yum install chrony centos-release-openstack-rocky openstack-selinux
+	apt install chrony
+  add-apt-repository cloud-archive:victoria
 ```
-	
-  edit the /etc/chrony.conf file to include:
+
+  edit the /etc/chrony/chrony.conf file to include:
 ```
 	server controller iburst
 	#pool 2.debian.pool.ntp.org offline iburst
@@ -139,14 +132,25 @@ This is a basic walkthrough of installing Openstack.  I do not recommend using t
 
   run:
 ``` bash
-	systemctl enable chronyd.service
-        systemctl start chronyd.service
+	server chrony restart
 ```
 
   you can verify by running:
 ``` bash
 	chronyc sources
 ```
+
+ Edit your `/etc/hosts` file to add in your nodes and associate an IP address to the controller name:
+```
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+{Internal Controller IP}    controller
+{Internal compute1 IP}      compute1
+{Internal compute2 IP}      compute2
+```
+
+ **Be sure to use the IP addresses of your nodes!**
 
 ## Installing Openstack services
 
@@ -195,12 +199,12 @@ then exit the database client.
 
 Install necessary packages by running:
 ``` bash
-	yum installl openstack-keystone httpd mod_wsgi 
+	yum installl openstack-keystone httpd mod_wsgi
 ```
 
   Then edit /etc/keystone/keystone.conf to contain the following:
    In the [database] section add:
-``` 
+```
 	connection = mysql+pymysql://keystone:KEYSTONE_DBPASS@controller/keystone
 ```
 
@@ -373,7 +377,7 @@ First run:
 
 
   Edit /etc/glance/glance-api.conf and add in the [database] section:
-``` 
+```
 	connection = mysql+pymysql://glance:GLANCE_DBPASS@controller/glance
 ```
   **Replace GLANCE_DBPASS with your glance database password.**
@@ -442,7 +446,7 @@ First run:
 	systemctl start openstack-glance-api.service openstack-glance-registry.service
 ```
 
-  To verify glance works, we can download a small image and try to store it.  Do this by running: 
+  To verify glance works, we can download a small image and try to store it.  Do this by running:
 ``` bash
 	wget http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
 ```
@@ -470,7 +474,7 @@ Now, onto Nova.  This is the compute/virtualization piece.
 	firewall_drive = nova.virt.firewall.NoopFirewallDriver
 ```
   **Replace RABBIT_PASS to your rabbit password.**
-  
+
   Now add to the [api_database] section:
 ```
 	connection = mysql+pymysql://nova:NOVA_DBPASS@controller/nova_api
@@ -615,7 +619,7 @@ Now, onto Nova.  This is the compute/virtualization piece.
 
 
 ####Neutron networking.
- 
+
  Edit the /etc/neutron/neutron.conf file:
   In the [database] section, add:
 ```
@@ -794,7 +798,7 @@ Configuring Horizon:
 	OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "Default"
 	OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
 ```
-	
+
  Add the following to /etc/httpd/conf.d/openstack-dashboard.conf:
 ```
 	WSGIApplicationGroup %{GLOBAL}
@@ -863,7 +867,7 @@ To configure Cinder:
 
 ##Compute Nodes
 Now, onto the compute nodes.  If you have a large number of compute nodes, you may want to use a deployment tool such as Openstack-Ansible, Kayobe, or Salt.  Otherwise, run through this guide on each compute.
- 
+
 First, install openstack packages:
 ``` bash
 	yum install openstack-nova-compute openstack-neutron-linuxbridge ebtables ipset
@@ -961,7 +965,7 @@ First, install openstack packages:
 ```
 
  Edit the /etc/neutron/neutron.conf file:
-  In the [database] section, be sure any connection options are commented out. 
+  In the [database] section, be sure any connection options are commented out.
   In the [DEFAULT] section, add:
 ```
 	transport_url = rabbit://openstack:RABBIT_PASS@controller
@@ -1008,7 +1012,7 @@ First, install openstack packages:
 	enable_security_group = true
 	firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 ```
-  
+
   Ensure the OS has the br_netfilter module loaded by running:
 ``` bash
 	sysctl net.bridge.bridge-nf-call-iptables
