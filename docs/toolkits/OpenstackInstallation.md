@@ -1,4 +1,5 @@
 #  Installing Openstack (Victoria)  
+---
 
 This is a basic walkthrough of installing Openstack.  
 
@@ -115,7 +116,7 @@ ETCD_LISTEN_CLIENT_URLS="http://10.0.0.10:2379"
 ```
 
 
-### Compute node pre-requirement setup/configuration
+### Compute node pre-requirement setup & configuration
 ---
 
  On the compute nodes, run the following:
@@ -740,8 +741,6 @@ Edit the /etc/neutron/neutron.conf file:
 ```
 
 
-
-
 Configuring Horizon:
  Edit /etc/openstack-dashboard/local_settings:
   Edit the settings to have the following:
@@ -826,13 +825,13 @@ To configure Cinder:
 
  Restart the compute service:
 ``` bash
-	systemctl restart openstack-nova-api
+	service nova-api restart
 ```
 
  Start and enable the cinder services:
 ``` bash
-	systemctl enable openstack-cinder-api.service openstack-cinder-scheduler.service
-	systemctl start openstack-cinder-api.service openstack-cinder-scheduler.service
+  service cinder-scheduler restart
+  service apache2 restart
 ```
 
 
