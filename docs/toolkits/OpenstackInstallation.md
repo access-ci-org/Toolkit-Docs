@@ -836,23 +836,25 @@ To configure Cinder:
 
 
 ##Compute Nodes
-Now, onto the compute nodes.  If you have a large number of compute nodes, you may want to use a deployment tool such as Openstack-Ansible, Kayobe, or Salt.  Otherwise, run through this guide on each compute.
+Now, onto the compute nodes.  If you have a large number of compute nodes, you may want to use a deployment tool such as Openstack-Ironic, Openstack-Ansible, Cobbler, etc.  Otherwise, run through this guide on each compute.
 
-First, install openstack packages:
+First, install Openstack packages:
 ``` bash
-	yum install openstack-nova-compute openstack-neutron-linuxbridge ebtables ipset
+  apt install nova-compute neutron-linuxbridge-agent
+
+#	yum install openstack-nova-compute openstack-neutron-linuxbridge ebtables ipset
 ```
 
  Edit /etc/nova/nova.conf:
   In the [DEFAULT] section, add:
 ```
-	enabled_apis = osapi_compute,metadata
+#	enabled_apis = osapi_compute,metadata
 	transport_url = rabbit://openstack:RABBIT_PASS@controller
 	my_ip = MANAGEMENT_INTERFACE_IP_ADDRESS
-	use_neutron = true
-	firewall_driver = nova.virt.firewall.NoopFirewallDriver
-	vif_plugging_is_fatal: false
-	vif_pluggins_timout: 0
+#	use_neutron = true
+#	firewall_driver = nova.virt.firewall.NoopFirewallDriver
+#	vif_plugging_is_fatal: false
+#	vif_pluggins_timout: 0
 ```
 
   In the [api] section, add:
@@ -860,16 +862,17 @@ First, install openstack packages:
 	auth_strategy = keystone
 ```
 
-  In the [keystone_authtoken] setion, add:
+  In the [keystone_authtoken] section, add:
 ```
-	auth_url = http://controller:5000/v3
-	memcached_servers = controller:11211
-	auth_type = password
-	project_domain_name = default
-	user_domain_name = default
-	project_name = service
-	username = nova
-	password = NOVA_PASS
+  www_authenticate_uri = http://controller:5000/
+  auth_url = http://controller:5000/
+  memcached_servers = controller:11211
+  auth_type = password
+  project_domain_name = Default
+  user_domain_name = Default
+  project_name = service
+  username = nova
+  password = NOVA_PASS
 ```
   **Replace NOVA_PASS with your Nova user's password.**
 
@@ -906,7 +909,6 @@ First, install openstack packages:
 
   In the [neutron] section, add:
 ```
-	url = http://controller:9696
 	auth_url = http://controller:5000
 	auth_type = password
 	project_domain_name = default
@@ -923,15 +925,15 @@ First, install openstack packages:
 	os_region_name = RegionOne
 ```
 
-  For the tutorial, all nodes suport hardware installation, but if you want to check:
+  Check to ensure your nodes support hardware acceleration with:
 ```
 	egrep -c '(vmx|svm)' /proc/cpuinfo
 ```
+If this returns a value of 0, your hardware does not support hardware acceleration and should be configured to utilize QEMU instead of KVM.
 
   Start the compute services:
 ```
-	systemctl enable libvirtd.service openstack-nova-compute.service
-	systemctl start libvirtd.service openstack-nova-compute.service
+  service nova-compute restart
 ```
 
  Edit the /etc/neutron/neutron.conf file:
@@ -967,7 +969,7 @@ First, install openstack packages:
 ```
 	physical_interface_mappings = provider:PROVIDER_INTERFACE_NAME
 ```
-  For the tutorial, the PROVIDER_INTERFACE_NAME will be ens1
+  **Make sure the PROVIDER_INTERFACE_NAME is replaced with your underlying provider physical interface.**
 
   In the [vxlan] section, add:
 ```
@@ -975,7 +977,7 @@ First, install openstack packages:
 	local_ip = OVERLAY_INTERFACE_IP_ADDRESS
 	l2_population = true
 ```
-  For the tutorial, the OVERLAY_INTERFACE_IP_ADDRESS will be the 192.168.0.* address on the compute.
+  **Make sure the OVERLAY_INTERFACE_IP_ADDRESS is replaced with your vxlan overlay network interface.**
 
   In the [securitygroup] section, add:
 ```
@@ -987,32 +989,30 @@ First, install openstack packages:
 ``` bash
 	sysctl net.bridge.bridge-nf-call-iptables
 ```
-  If that does not result a 1 value, then load the module with:
+  If that does not return a value of 1, then load the module with:
 ``` bash
 	modprobe br_netfilter
 ```
 
   Restart the compute service with:
 ``` bash
-	systemctl restart openstack-nova-compute.service
+	service nova-compute restart
 ```
 
-  Start and enable the linuxbridge agents:
+  Retart the linuxbridge agents:
 ``` bash
-	systemctl enable neutron-linuxbridge-agent.service
-	systemctl start neutron-linuxbridge-agent.service
+	service neutron-linuxbridge-agent restart
 ```
 
   After setting up the compute nodes, go back to the CONTROLLER node and run:
 ``` bash
 	source admin-openrc
-	openstack compute service list --service nova-compute
 	su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 ```
 
-  This will add the computes to the headnodes compute database.
+  This will add the computes to the headnode's compute database.
 
 
-Now you can run through a VM installation on horizon to test your setup!
+Now you can run through a VM installation on horizon to test your setup:
 
-https://docs.openstack.org/horizon/rocky/user/log-in.html
+https://docs.openstack.org/horizon/victoria/user/log-in.html
