@@ -285,7 +285,6 @@ Install necessary packages by running:
 
   Be sure to change the OS_PASSWORD to the password you entered when you created the "myuser" in openstack user create command.
 
-
 Now we need to create some service accounts for the openstack services.
 
 First run:
@@ -336,7 +335,7 @@ First run:
 	openstack user create --domain default --password-prompt neutron
 ```
 
-  This will ask for a password.  Enter a passwod for the neutron user, then run:
+  This will ask for a password.  Enter a password for the neutron user, then run:
 ``` bash
 	openstack role add --project service --user nova admin
 	openstack service create --name nova --description "OpenStack Networking" network
@@ -365,9 +364,11 @@ First run:
 
   Install the openstack service packages by running:
 ``` bash
-	yum install openstack-cinder openstack-glance openstack-nova-api openstack-nova-conductor openstack-nova-console openstack-nova-novncproxy openstack-nova-scheduler openstack-nova-placement-api openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge ebtables openstack-dashboard python-rbd
+  apt install glance placement-api nova-api nova-conductor nova-novncproxy nova-scheduler neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent openstack-dashboard cinder-api cinder-scheduler
 ```
-
+``` bash
+	yum install openstack-cinder openstack-nova-console ebtables python-rbd
+```
 
   Edit /etc/glance/glance-api.conf and add in the [database] section:
 ```
@@ -401,33 +402,6 @@ First run:
 	filesystem_store_datadir = /var/lib/glance/images/
 ```
 
-
-  Now we need to edit the /etc/glance/glance-registry.conf file and add into the [database] section:
-```
-	connection = mysql+pymysql://glance:GLANCE_DBPASS@controller/glance
-```
-  **Replace GLANCE_DBPASS with your glance database password,**  
-
-  Now add in the [keystone_authtoken] section:
-```
-	www_authenticate_uri = http://controller:5000
-	auth_url = http://controller:5000
-	memcached_servers = controller:11211
-	auth_type = password
-	project_domain_name = Default
-	user_domain_name = Default
-	project_name = service
-	username = glance
-	password = GLANCE_PASS
-```
-  **Replace GLANCE_PASS with your password for the glance user.**
-
-  Add into the [paste_deploy] section:
-```
-	flavor = keystone
-```
-  Save and close out of the /etc/glance/glance-registry.conf file.
-
   Now, we need to populate the image service database by running:
 ``` bash
 	su -s /bin/sh -c "glance-manage db_sync" glance
@@ -435,8 +409,7 @@ First run:
 
   Start the image services and enable them so they run on startup:
 ``` bash
-	systemctl enable openstack-glance-api.service openstack-glance-registry.service
-	systemctl start openstack-glance-api.service openstack-glance-registry.service
+  service glance-api start
 ```
 
   To verify glance works, we can download a small image and try to store it.  Do this by running:
@@ -454,17 +427,49 @@ First run:
 	openstack image list
 ```
 
-  If you see the image in openstack, glance is working correctly.
+  If you see the image in openstack, the Glance image store is working correctly.
 
+
+Placement
+  Edit the /etc/placement/placement.conf and edit the [placement_database] section to include:
+```
+connection = mysql+pymysql://placement:PLACEMENT_DBPASS@controller/placement
+```
+  **Replace PLACEMENT_DBPASS to your database password.**
+
+  Add the following into the [api] and [keystone_authtoken] sections:
+```
+[api]
+auth_strategy = keystone
+
+[keystone_authtoken]
+auth_url = http://controller:5000/v3
+memcached_servers = controller:11211
+auth_type = password
+project_domain_name = Default
+user_domain_name = Default
+project_name = service
+username = placement
+password = PLACEMENT_PASS
+```
+
+  **Replace PLACEMENT_PASS to your password for the placement user.**
+
+Now, populate the placement database:
+``` bash
+  su -s /bin/sh -c "placement-manage db sync" placement
+```
+
+Once that's complete, restart the apache2 service with:
+``` bash
+  service apache2 restart
+```
 
 Now, onto Nova.  This is the compute/virtualization piece.
   Edit the /etc/nova/nova.conf file and add to the [DEFAULT] section:
 ```
-	enabled_apis = osapi_compute,metadata
-	transport_url = rabbit://openstack:RABBIT_PASS@controller
-	my_ip = 192.168.0.10
-	use_neutron = true
-	firewall_drive = nova.virt.firewall.NoopFirewallDriver
+	transport_url = rabbit://openstack:RABBIT_PASS@controller:5672/
+	my_ip = 10.0.0.10
 ```
   **Replace RABBIT_PASS to your rabbit password.**
 
@@ -480,12 +485,6 @@ Now, onto Nova.  This is the compute/virtualization piece.
 ```
   **Replace NOVA_DBPASS to your database password.**
 
-  Add to the [placement_database] section:
-```
-	connection = mysql+pymysql://placement:PLACEMENT_DBPASS@controller/placement
-```
-  **Replace PLACEMENT_DBPASS to your database password.**
-
   Add to the [api] section:
 ```
 	auth_strategy = keystone
@@ -493,14 +492,15 @@ Now, onto Nova.  This is the compute/virtualization piece.
 
   Add to the [keystone_authtoken] section:
 ```
-	auth_url = http://controller:5000/v3
-	memcached_servers = controller:11211
-	auth_type = password
-	project_domain_name = default
-	user_domain_name = default
-	project_name = service
-	username = nova
-	password = NOVA_PASS
+  www_authenticate_uri = http://controller:5000/
+  auth_url = http://controller:5000/
+  memcached_servers = controller:11211
+  auth_type = password
+  project_domain_name = Default
+  user_domain_name = Default
+  project_name = service
+  username = nova
+  password = NOVA_PASS
 ```
   **Replace NOVA_PASS to your nova user passsword.**
 
@@ -534,14 +534,8 @@ Now, onto Nova.  This is the compute/virtualization piece.
 ```
   **Replace PLACEMENT_PASS to your password for the placement user.**
 
-  Add to the [cinder] section:
-```
-	os_region_name = RegionOne
-```
-
   Add to the [neutron] section:
 ```
-	url = http://controller:9696
 	auth_url = http://controller:5000
 	auth_type = password
 	project_domain_name = default
@@ -554,66 +548,50 @@ Now, onto Nova.  This is the compute/virtualization piece.
 	metadata_proxy_shared_secret = METADATA_SECRET
 ```
   **Replace NEUTRON_PASS with your neutron user's password.**
-  ALSO, for METADATA_SECRET, set it to a suitable password/uuid.  You can create a uuid with:
+  Also, for METADATA_SECRET, set it to a suitable password/uuid.  You can create a uuid with:
 ``` bash
 	uuidgen
 ```
   **You will need this later.**
 
- Now edit /etc/httpd/conf.d/00-nova-placement-api.conf and add:
-```
-	<Directory /usr/bin>
-	   <IfVersion >= 2.4>
-	      Require all granted
-	   </IfVersion>
-	   <IfVersion < 2.4>
-	      Order allow,deny
-	      Allow from all
-	   </IfVersion>
-	</Directory>
+  Populate the nova-api databases:
+ ``` bash
+ 	su -s /bin/sh -c "nova-manage api_db sync" nova
 ```
 
- Restart the httpd service:
+Register the cell0 database:
 ``` bash
-	systemctl restart httpd
+ su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
 ```
 
- Populate the nova-api and placement databases:
+Create the cell1 cell:
 ``` bash
-	su -s /bin/sh -c "nova-manage api_db sync" nova
+ su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
 ```
 
- Register the cell0 database:
+Populate the nova database:
 ``` bash
-	su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
+ su -s /bin/sh -c "nova-manage db sync" nova
 ```
 
- Create the cell1 cell:
+Verify nova cell0 and cell1 are registered correctly:
 ``` bash
-	su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
+ su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 ```
+The table should contain cell1 and cell0.
 
- Populate the nova database:
+Now, restart the compute services with:
 ``` bash
-	su -s /bin/sh -c "nova-manage db sync" nova
-```
-
- Verify nova cell0 and cell1 are registered correctly:
-``` bash
-	su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
-```
- The table should contain cell1 and cell0.
-
- Start the nova services and enable them to run on restart:
-``` bash
-	systemctl enable openstack-nova-api.service openstack-nova-consoleauth openstack-nova-scheduler.service openstack-nova-conductor.service openstack-nova-novncproxy.service
-	systemctl start openstack-nova-api.service openstack-nova-consoleauth openstack-nova-scheduler.service openstack-nova-conductor.service openstack-nova-novncproxy.service
+ service nova-api restart
+ service nova-scheduler restart
+ service nova-conductor restart
+ service nova-novncproxy restart
 ```
 
 
 ####Neutron networking.
 
- Edit the /etc/neutron/neutron.conf file:
+Edit the /etc/neutron/neutron.conf file:
   In the [database] section, add:
 ```
 	connection= mysql+pymysql://neutron:NEUTRON_DBPASS@controller/neutron
@@ -698,9 +676,10 @@ Now, onto Nova.  This is the compute/virtualization piece.
   In the [vxlan] section, add:
 ```
 	enable_vxlan = true
-	local_ip = 192.168.0.10
+	local_ip = OVERLAY_INTERFACE_IP_ADDRESS
 	l2_population = true
 ```
+ **Be sure to utilize the interface ip address to the address handling vxlan networks!**
 
   In the [securitygroup] section, add:
 ```
@@ -708,7 +687,7 @@ Now, onto Nova.  This is the compute/virtualization piece.
 	firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 ```
 
- Make sure your OS supports network bridge filters.  To do this, run:
+ Make sure your system kernel supports network bridge filters.  To do this, run:
 ``` bash
 	sysctl net.bridge.bridge-nf-call-iptables
 ```
@@ -733,7 +712,6 @@ Now, onto Nova.  This is the compute/virtualization piece.
 	enable_isolated_metadata = true
 ```
 
-
  Edit the /etc/neutron/metadata_agent.ini file:
   In the [DEFAULT] section, add:
 ```
@@ -742,11 +720,6 @@ Now, onto Nova.  This is the compute/virtualization piece.
 ```
   **Replace METADATA_SECRET with the METADATA_SECRET you used in the /etc/nova/nova.conf file.**
 
- Link the ml2_conf.ini with the plugin.ini by:
-``` bash
-	ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
-```
-
  populate the neutron database by running:
 ``` bash
 	su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
@@ -754,24 +727,30 @@ Now, onto Nova.  This is the compute/virtualization piece.
 
  restart the compute api service:
 ``` bash
-	systemctl restart openstack-nova-api.service
+	service nova-api restart
 ```
 
  Start and enable the networking services:
 ``` bash
-	systemctl enable neutron-server.service neutron-linuxbridge-agent.service neutron-dhcp-agent.service neutron-metadata-agent.service neutron-l3-agent.service
-	systemctl start neutron-server.service neutron-linuxbridge-agent.service neutron-dhcp-agent.service neutron-metadata-agent.service neutron-l3-agent.service
+  service neutron-server restart
+  service neutron-linuxbridge-agent restart
+  service neutron-dhcp-agent restart
+  service neutron-metadata-agent restart
+  service neutron-l3-agent restart
 ```
+
+
 
 
 Configuring Horizon:
- edit /etc/openstack-dashboard/local_settings:
-  edit the settings to have the following:
+ Edit /etc/openstack-dashboard/local_settings:
+  Edit the settings to have the following:
 ```
 	OPENSTACK_HOST = "controller"
-	ALLOWED_HOSTS = ['*']
+	ALLOWED_HOSTS = ['HOSTS']
 ```
-   **Setting ALLOWED_HOSTS is a potential risk.  For our tutorial, we are behind a wall, so we won't have a problem.**
+   **Setting ALLOWED_HOSTS to '*' allows everyone to access the dashboard, but is a potential risk. Change HOSTS to hosts that you want to allow access.**
+
 ```
 	SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
@@ -781,7 +760,7 @@ Configuring Horizon:
 	         'LOCATION': 'controller:11211',
    	 }
 	}
-	OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
+  OPENSTACK_KEYSTONE_URL = "http://%s/identity/v3" % OPENSTACK_HOST
 	OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
 	OPENSTACK_API_VERSIONS = {
 	   "identity": 3,
@@ -792,18 +771,17 @@ Configuring Horizon:
 	OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
 ```
 
- Add the following to /etc/httpd/conf.d/openstack-dashboard.conf:
+ Add the following to /etc/apache2/conf-available/openstack-dashboard.conf:
 ```
 	WSGIApplicationGroup %{GLOBAL}
 ```
 
- Now, restart the web service and memcached service:
+ Now, restart the web service:
 ``` bash
-	systemctl restart httpd.service memcached.service
+	service apache2 reload
 ```
 
 After that, you should be able to access the dashboard by going to `http://controller/dashboard`
-For the tutorial, this will be http://156.56.24.122/dashboard
 If that doesn't work, you're in trouble.
 
 To configure Cinder:
@@ -818,13 +796,13 @@ To configure Cinder:
 ```
 	transport_url = rabbit://openstack:RABBIT_PASS@controller
  	auth_strategy = keystone
-	my_ip = 192.168.0.10
+	my_ip = 10.0.0.10
 ```
   **Replace RABBIT_PASS with your rabbit password.**
 
   In the [keystone_authtoken] section, add:
 ```
-	auth_uri = http://controller:5000
+  www_authenticate_uri = http://controller:5000
 	auth_url = http://controller:5000
 	memcached_servers = controller:11211
 	auth_type = password
