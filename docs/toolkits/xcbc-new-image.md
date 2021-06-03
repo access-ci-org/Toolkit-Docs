@@ -50,6 +50,13 @@ place, chroot into the environment, and build away:
 It is preferable, however, to install software in a shared filesystem rather than inside of the image, 
 since large image result in slower boot times and more RAM used for the tmpfs.
 
+If you build development tools or some Python tools into the compute image, be aware that not all pieces of the chroot
+are included in the final image! Check in 
+```/etc/warewulf/vnfs.conf``` 
+for lines like
+```hybridize+=/usr/lib/```
+which exclude */usr/lib* from the final image. Comment these out as needed for your packges to function correctly!
+
 If you need to build additional drivers for something like a GPU, it may be necessary to mount additional
 directories into the chroot environment.
 
