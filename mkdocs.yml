@@ -10,7 +10,8 @@ pages:
 - Home: 'index.md'
 - Toolkits:
   - XCBC: 
-    - Installation Tutorial: 'toolkits/xcbc-installation.md'
+    - RHEL 8 Installation Tutorial: 'toolkits/xcbc-2.0-installation.md'
+    - RHEL 7 Installation Tutorial: 'toolkits/xcbc-installation.md'
     - GPU Node Build: 'toolkits/gpu-nodes.md'
     - Custom Node Images: 'toolkits/xcbc-new-image.md'
     - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
