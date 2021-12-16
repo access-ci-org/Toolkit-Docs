@@ -3,6 +3,7 @@ site_url: https://xsede.org/xcri
 site_description: XCRI Toolkit documentation
 
 repo_url: https://github.com/XSEDE/XCRI-Docs
+edit_uri: "edit/main/docs"
 
 docs_dir: docs
 
