@@ -22,6 +22,8 @@ pages:
     - Configuration: 'toolkits/clustermon-config.md'
   - Jetstream VC: 
     - Installation: 'toolkits/vc-installation.md'
+  - Jetstream 2 VC:
+    - Installation: 'toolkits/vc-installation-js2.md'
   - Container Template Library: 
     - Quick Start Guide: 'toolkits/ctl/ctlquick.md'
   - OpenStack Installation:
