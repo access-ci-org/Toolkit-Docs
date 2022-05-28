@@ -1,4 +1,4 @@
-#  Installing Openstack (Victoria)  
+#  OpenStack (Victoria) Manual Installation Guide
 ---
 
 This is a basic walkthrough of installing Openstack.  
