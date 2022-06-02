@@ -1,0 +1,3 @@
+# OpenStack Automated Installation
+
+(placeholder)
