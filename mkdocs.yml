@@ -27,7 +27,7 @@ pages:
   - Container Template Library: 
     - Quick Start Guide: 'toolkits/ctl/ctlquick.md'
   - OpenStack Cloud Toolkit:
-    - OpenStack Overview: 'toolkits/openstack-overview.md'
+    - OpenStack Toolkit Overview: 'toolkits/openstack-overview.md'
     - OpenStack Planning: 'toolkits/openstack-planning-guide.md'
     - OpenStack Manual Installation: 'toolkits/OpenstackInstallation.md'
     - OpenStack Automated Installation: 'toolkits/openstack-automated-installation.md'
