@@ -217,7 +217,7 @@ Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
 
-1\. `git clone --single-branch -branch 2.0-release https://github.com/XSEDE/CRI_XCBC/ `
+1\. `git clone --single-branch --branch 2.0-release https://github.com/XSEDE/CRI_XCBC/ `
 
   Get the actual playbooks.
 
@@ -234,7 +234,7 @@ run `ssh-keygen`, to create a local set of ssh keys, followed by
 
 3\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
 
-(This mainly install Ansible and a handful of dependencies, then runs a very simple test)
+(This mainly installs Ansible and a handful of dependencies, then runs a very simple test)
 
 Defining Cluster Parameters
 ---------------------------
@@ -245,7 +245,7 @@ several important parameters for the cluster installation. The current
 defaults should work with the Virtualbox configuration suggested
 above. This is the only file that should be edited during this tutorial!
 Other files that would be useful or necessary to edit during a production
-build will be pointed out as we go along.
+build will be pointed out as we go along. 
 
 
 (The format here is
@@ -282,8 +282,8 @@ Separated by category, the full list of parameters is:
  
 -   ```build_kernel_ver: '3.10.0-327.el7.x86_64'```
     
-    `uname -r` at build time - required for Warewulf to build bootstrap
-    images for the compute nodes. THIS SHOULD BE UPDATED AT RUN-TIME!
+    This must match the output of `uname -r` at build time - required for Warewulf to build bootstrap
+    images for the compute nodes. THIS MUST BE UPDATED AT RUN-TIME!
 
 #### Private network parameters
 No changes are necessary in this section.
