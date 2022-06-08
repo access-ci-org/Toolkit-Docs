@@ -48,7 +48,7 @@ In this example, the management network is a private `/24` subnet (netmask of `2
 
 ## Basic Node Setup
 
-### Operating System
+### Install Operating System
 
 First, install the Ubuntu Server operating system on each node. [Here is a guide for installing Ubuntu Server](https://ubuntu.com/tutorials/install-ubuntu-server#1-overview).  
 
@@ -56,7 +56,7 @@ This guide assumes that you set up a local user named `deployer` during setup. I
 
 Don't worry about configuring the network interfaces during operating system installation, we will do that soon.
 
-### Node Networking
+### Configure Node Networking
 
 Each node needs two network interfaces, each connected to a physical network:
 
@@ -65,7 +65,7 @@ Each node needs two network interfaces, each connected to a physical network:
 
 The management interface needs a static IP address (one that doesn't change over time).
 
-#### Determining Network Interface Names
+#### Determine Physical Network Interface Names
 
 First, determine your network interface names. On each node, enter `ip link show`, and you'll see something like this:
 
@@ -86,7 +86,7 @@ Ignoring the loopback interface (named `lo`), this server has two network interf
 | first           | enp1s0                 | management, APIs      |
 | second          | enp7s0                 | floating IP addresses |
 
-#### Setting Static IP Address for Management Interface
+#### Set Static IP Address for First Network Interface
 
 We need to set static (as opposed to dynamic, or DHCP-assigned) IP addresses for each node to provide a reliable way of connecting to them.
 
@@ -108,7 +108,7 @@ Then run `netplan apply`.
 
 If you did this via SSH, you likely need to kill and restart your SSH session, connecting to the server at its new IP address.
 
-#### Setting up hostname resolution
+#### Configure Hostname Resolution
 
 On each node, add something like this to the bottom of the `/etc/hosts` file:
 
@@ -122,7 +122,7 @@ This lets the nodes connect to each other by their name instead of IP address.
 
 Test it with the `ping` commands, e.g. by running `ping compute1` from ctl0. _You must be able to ping every node by its hostname from every other node_, otherwise you will have trouble later in the process.
 
-## Set Up SSH Connectivity Between Nodes
+### Configure SSH Connectivity Between Nodes
 
 First, generate an SSH keypair on the deployment node, ctl0. Do this by running `ssh-keygen` as the root user, and answering the question prompts. For example:
 
