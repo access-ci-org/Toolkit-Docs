@@ -90,7 +90,7 @@ Ignoring the loopback interface (named `lo`), this server has two network interf
 
 We need to set static (as opposed to dynamic, or DHCP-assigned) IP addresses for each node to provide a reliable way of connecting to them.
 
-Set a static IP address for the first network interface. Using your preferred text editor, modify the netplan configuration (e.g. in `/etc/netplan/00-installer-config.yaml`) as follows.
+Set a static IP address for the first network interface. Using your preferred text editor, modify the netplan configuration (e.g. in `/etc/netplan/00-installer-config.yaml`) as follows. If you prefer, replace 1.1.1.1 with your local orgnaization's nameserver.
 
 ```yaml
 network:
@@ -101,6 +101,9 @@ network:
       routes:
         - to: default
           via: 192.168.122.1
+      nameservers:
+        addresses:
+          - 1.1.1.1
   version: 2
 ```
 
@@ -157,21 +160,43 @@ Third, make an initial SSH connection from the deployment node (root user) to ea
 
 ## Install Kolla Ansible
 
-Follow all the steps in these sub-sections on the deployment node.
-
 ### Install Dependencies
 
 Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-dependencies>
 
-It is best to use a Python virtual environment for the Python dependencies. This avoids polluting the Python packages that are controlled by the system's package manager.
+From here on, use the "using a virtual environment" steps -- this avoids polluting the Python packages that are controlled by the system's package manager. Note that you'll need to replace `/path/to/venv` with a real filesystem path. This guide will use `/root/kolla-ansible-venv`.
+
+So, enter these commands:
+
+```bash
+apt update
+apt install python3-dev libffi-dev gcc libssl-dev
+apt install python3-venv
+python3 -m venv /root/kolla-ansible-venv
+source /root/kolla-ansible-venv/bin/activate
+pip install -U pip
+pip install 'ansible>=4,<6'
+```
 
 ### Install Kolla Ansible itself
 
 Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-kolla-ansible-for-deployment-or-evaluation>
 
+```
+pip install git+https://opendev.org/openstack/kolla-ansible@stable/yoga
+mkdir -p /etc/kolla
+chown root:root /etc/kolla
+cp -r /root/kolla-ansible-venv/share/kolla-ansible/etc_examples/kolla/* /etc/kolla
+cp /root/kolla-ansible-venv/share/kolla-ansible/ansible/inventory/* /etc/kolla
+```
+
 ### Install Ansible Galaxy Requirements
 
 Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-ansible-galaxy-requirements>
+
+```
+kolla-ansible install-deps
+```
 
 ## Prepare Configuration
 
