@@ -6,8 +6,8 @@ This automated installation guide uses the [Kolla Ansible](https://docs.openstac
 
 On the size and shape of your cloud:
 
-- For simplicity, this guide shows deployment of an example cloud with one control node and two compute nodes. If you have more than two compute nodes, this guide is still for you!
-- The only potential complication is if you want more than one control node to make a load-balanced, highly-available (LB/HA) control plane. LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and hundreds of compute nodes. Kolla Ansible fully supports deploying a LB/HA control plane, but that is beyond the scope of this guide. LB/HA is not essential when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
+- For simplicity, this guide shows deployment of an example cloud with one control node and two compute nodes. If you have more than two compute nodes, this guide is still for you! The same deployment process scales to many compute nodes.
+- Kolla Ansible fully supports deploying a load-balanced, highly-available (LB/HA) control plane (i.e., one with multiple control plane nodes), but that is beyond the scope of this guide. LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and hundreds of compute nodes. LB/HA is not essential when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
 
 On software versions:
 
@@ -29,6 +29,7 @@ This guide assumes that you possess basic Linux systems administrator skills and
     - Copying and pasting text into and out of an SSH session, on your particular desktop operating system.
 - Knowing which user you are running commands as ([guide for determining current user](https://www.howtogeek.com/410423/how-to-determine-the-current-user-account-in-linux/)), and becoming the root user when needed ([guide to running commands as root](https://kb.iu.edu/d/amyi)).
 - Editing text files using a terminal-based editor like `nano` ([guide to nano](https://kb.iu.edu/d/aeug)) or `vi` ([guide to vi](https://kb.iu.edu/d/adxz)). _nano is easier for beginners._
+- Editing configuration files in YAML format ([guide to YAML syntax](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html)) -- this one is easy to pick up if you're unfamiliar.
 - Setting up TCP/IP networking, including static IP addresses.
 - Setting up SSH public-key authentication ([guide to public key authentication](https://kb.iu.edu/d/aews)).
 
@@ -178,6 +179,8 @@ pip install -U pip
 pip install 'ansible>=4,<6'
 ```
 
+If you exit your shell, you must re-activate the virtual environment (run `source /root/kolla-ansible-venv/bin/activate`) before running many of the commands to follow.
+
 ### Install Kolla Ansible itself
 
 Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-kolla-ansible-for-deployment-or-evaluation>
@@ -200,26 +203,40 @@ kolla-ansible install-deps
 
 ## Prepare Configuration
 
+### Configure Ansible
+
+Create an `/etc/ansible` directory, create a file `/etc/ansible/ansible.cfg`, and paste the following into it:
+
+```
+[defaults]
+host_key_checking=False
+pipelining=True
+forks=100
+```
+
 ### Build Ansible Inventory File
+
+In `/etc/kolla/multinode`, populate the first section of the file like this, replacing everything up until `[baremetal:children]`:
 
 ```ini
 [control]
-10.0.0.10
+ctl0 ansible_connection=local
 
 [network:children]
 control
 
 [compute]
-10.0.0.[11:12]
+compute[0:1] ansible_user=deployer become=true
 
-[monitoring]
-10.0.0.10
+[monitoring:children]
+control
+
 
 [storage:children]
 compute
 
-[deployment]
-localhost ansible_connection=local become=true
+[deployment:children]
+control
 ```
 
 ### Test Inventory and SSH Connectivity
@@ -237,13 +254,23 @@ Run this from the deployment node:
 kolla-genpwd
 ```
 
-### Global Configuration
+This will generate many passwords for service accounts used throughout OpenStack. These randomly-generated passwords are saved in `/etc/kolla/passwords.yml`. If you want, you can modify them before deploying OpenStack.
 
-TODO
+### Configure Kolla Ansible
+
+Next, modify the contents of `/etc/kolla/globals.yml`.
 
 The following steps simplify this section: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#kolla-globals-yml>
 
-For simplicity, we use the same distro inside containers that we use on the bare nodes:  
+
+Add this line to the file, which will instruct Kolla Ansible to set up a virtual environment on the target hosts:
+
+```
+virtualenv: "/root/kolla-ansible-target-venv"
+virtualenv_site_packages: true
+```
+
+For simplicity, let's use the same distro inside containers that we use on the bare nodes, so un-comment and modify this line:
 
 ```
 kolla_base_distro: "ubuntu"
@@ -251,19 +278,70 @@ kolla_base_distro: "ubuntu"
 
 #### Network Configuration
 
-Enter the network interface names that you determined earlier, up in the "Networking" section:
+Un-comment and modify these two lines, entering the network interface names that you determined earlier in [this section](#determine-physical-network-interface-names). `network_interface` is used for management and API access, while `network_external_interface` is used for instance floating IP addresses.
 
 ```
-network_interface: "eth0"
-network_external_interface: "eth1"
+network_interface: "enp1s0"
+neutron_external_interface: "enp7s0"
 ```
 
-Designate an unused IP address for internal API endpoints (TODO explain this earlier): 
+Next, identify an additional, _unused_ IP address on your network, and designate it for internal API endpoints. Un-comment this line and set it:
 ```
-kolla_internal_vip_address: "10.1.0.250"
+kolla_internal_vip_address: "192.168.122.9"
 ```
+
+(Do not manually configure a network interface with this IP address -- Kolla Ansible will set it up.)
+
+After you save `globals.yml`, you can run `grep '^[^#]' globals.yml` to see all the lines that are _not_ commented out. Confirm that the output contains at least these four lines:
+
+```
+virtualenv: "/home/kolla/kolla-ansible-target-venv"
+virtualenv_site_packages: true
+kolla_base_distro: "ubuntu"
+kolla_internal_vip_address: "192.168.122.9"
+network_interface: "enp1s0"
+neutron_external_interface: "enp7s0"
+```
+
+That's all you need. You are now ready to deploy OpenStack.
 
 ## Deploy OpenStack
 
-Follow these steps: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#deployment>
+The following steps simplify this section: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#deployment>
 
+Before running the `kolla-ansible` commands, run the following command to set a new environment variable in your terminal:
+
+```
+export EXTRA_OPTS="--ask-become-pass"
+```
+
+Why? Ansible needs to be able to `sudo` as the deployer user on remote hosts. This environment variable will cause each `kolla-ansible` command to prompt for the `deployer` user password. Enter it when prompted.
+
+Next, let's run Kolla Ansible. Start with:
+
+```
+kolla-ansible -i ./multinode bootstrap-servers
+
+```
+
+All of these tasks should return "ok" or "changed". If you see any failures, scroll up to see which tasks failed. Address the failures and re-run the `kolla-ansible` command before proceeding.
+
+For subsequent commands, add this line to `globals.yml`, to instruct Kolla Ansible to use the virtual environment that the bootstrap command just created.
+
+```
+ansible_python_interpreter: "/home/kolla/kolla-ansible-target-venv/bin/python"
+```
+
+Next, pre-deployment checks:
+
+```
+kolla-ansible -i ./multinode prechecks
+```
+
+Again, all of these tasks should pass. If there are any failures, address them, re-run the pre-checks, and confirm success before proceeding.
+
+Finally, this command deploys OpenStack:
+
+```
+kolla-ansible -i ./multinode deploy
+```
