@@ -345,3 +345,9 @@ Finally, this command deploys OpenStack:
 ```
 kolla-ansible -i ./multinode deploy
 ```
+
+This may take a while. At the end, you should have a working cloud!
+
+## Test Your Cloud
+
+Follow these steps to test your cloud: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#using-openstack>
