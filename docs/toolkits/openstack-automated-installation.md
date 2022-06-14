@@ -242,7 +242,7 @@ control
 ### Test Inventory and SSH Connectivity
 
 Run this from the deployment node:
-```
+```shell
 ansible -i multinode all -m ping
 ```
 The output should show a successful connection for all nodes.
@@ -250,7 +250,7 @@ The output should show a successful connection for all nodes.
 ### Generate Kolla Passwords
 
 Run this from the deployment node:
-```
+```shell
 kolla-genpwd
 ```
 
@@ -260,19 +260,19 @@ This will generate many passwords for service accounts used throughout OpenStack
 
 Next, modify the contents of `/etc/kolla/globals.yml`.
 
-The following steps simplify this section: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#kolla-globals-yml>
+The following steps simplify [this section](https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#kolla-globals-yml) of the upstream docs.
 
 
 Add this line to the file, which will instruct Kolla Ansible to set up a virtual environment on the target hosts:
 
-```
+```yaml
 virtualenv: "/root/kolla-ansible-target-venv"
 virtualenv_site_packages: true
 ```
 
 For simplicity, let's use the same distro inside containers that we use on the bare nodes, so un-comment and modify this line:
 
-```
+```yaml
 kolla_base_distro: "ubuntu"
 ```
 
@@ -280,13 +280,13 @@ kolla_base_distro: "ubuntu"
 
 Un-comment and modify these two lines, entering the network interface names that you determined earlier in [this section](#determine-physical-network-interface-names). `network_interface` is used for management and API access, while `network_external_interface` is used for instance floating IP addresses.
 
-```
+```yaml
 network_interface: "enp1s0"
 neutron_external_interface: "enp7s0"
 ```
 
 Next, identify an additional, _unused_ IP address on your network, and designate it for internal API endpoints. Un-comment this line and set it:
-```
+```yaml
 kolla_internal_vip_address: "192.168.122.9"
 ```
 
@@ -294,7 +294,7 @@ kolla_internal_vip_address: "192.168.122.9"
 
 After you save `globals.yml`, you can run `grep '^[^#]' globals.yml` to see all the lines that are _not_ commented out. Confirm that the output contains at least these four lines:
 
-```
+```yaml
 virtualenv: "/home/kolla/kolla-ansible-target-venv"
 virtualenv_site_packages: true
 kolla_base_distro: "ubuntu"
@@ -307,11 +307,11 @@ That's all you need. You are now ready to deploy OpenStack.
 
 ## Deploy OpenStack
 
-The following steps simplify this section: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#deployment>
+The following steps simplify [this section](https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#deployment) of the upstream docs.
 
 Before running the `kolla-ansible` commands, run the following command to set a new environment variable in your terminal:
 
-```
+```shell
 export EXTRA_OPTS="--ask-become-pass"
 ```
 
@@ -319,30 +319,29 @@ Why? Ansible needs to be able to `sudo` as the deployer user on remote hosts. Th
 
 Next, let's run Kolla Ansible. Start with:
 
-```
+```shell
 kolla-ansible -i ./multinode bootstrap-servers
-
 ```
 
-All of these tasks should return "ok" or "changed". If you see any failures, scroll up to see which tasks failed. Address the failures and re-run the `kolla-ansible` command before proceeding.
+All of these tasks should return "ok" or "changed". If you see any failures, scroll up to see which tasks failed. Address the failures and re-run the `kolla-ansible` command before proceeding further.
 
-For subsequent commands, add this line to `globals.yml`, to instruct Kolla Ansible to use the virtual environment that the bootstrap command just created.
+For subsequent commands, add this line to `globals.yml`. This instructs Kolla Ansible to use the virtual environment that the bootstrap command just created.
 
-```
+```yaml
 ansible_python_interpreter: "/home/kolla/kolla-ansible-target-venv/bin/python"
 ```
 
-Next, pre-deployment checks:
+Next, run pre-deployment checks:
 
-```
+```shell
 kolla-ansible -i ./multinode prechecks
 ```
 
-Again, all of these tasks should pass. If there are any failures, address them, re-run the pre-checks, and confirm success before proceeding.
+Again, all of these tasks should pass. If there are any failures, address them, re-run the pre-checks, and confirm success before proceeding further.
 
 Finally, this command deploys OpenStack:
 
-```
+```shell
 kolla-ansible -i ./multinode deploy
 ```
 
