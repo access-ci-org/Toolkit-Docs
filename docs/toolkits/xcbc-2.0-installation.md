@@ -86,7 +86,7 @@ One for the headnode, and two computes. The headnode should have at least
 storage network here, so a single NIC per node is sufficient, but having two
 on the headnode would allow you to work remotely through ssh.
 
-For the internal network, a "dumb" ethernet switch is all that's needed.
+For the internal network, an unmanaged ethernet switch is all that's needed.
 Before beginning the OS installation on the headnode, install ethernet
 cables between the all nodes and your switch. The rest of the network
 configuration will take place during the OS installation.
@@ -194,7 +194,7 @@ Connecting to your headnode
 ---------------------------
 
 Instead of using the VirtualBox terminal, it's often much simpler to ssh in to the headnode
-from your native local terminal - which allows for copy-pasting, window history, etc. 
+from your local machine's terminal - which allows for copy-pasting, window history, etc. 
 
 Check the address of the host-only network using the ```ip addr``` command on the
 headnode - usually in the ```192.168.56.0\24``` by default.
@@ -508,7 +508,7 @@ To make sure the new user will be enabled on the compute node, run
 `wwsh file sync` to update the passwd,group, and shadow files in the Warewulf
 database, followed by 
 `pdsh -w compute-[0-1] '/warewulf/transports/http/wwgetfiles'`
-to request that the compute nodes pull the files from the master. While they are automatically
+to request that the compute nodes pull the files from the head node. While they are automatically
 synced every 5 minutes, this will force an update immediately.
 
 Next, become the new user, via `su - test-user`.
