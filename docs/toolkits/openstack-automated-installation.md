@@ -17,7 +17,7 @@ On software versions:
 On users and SSH:
 
 - Many of the commands in this guide require running as the root user. So, when this guide provides shell commands, it is generally assumed that you run those commands from a root shell (obtained by typing `sudo su` and pressing enter).
-- Generally, this guide uses SSH to connect to each node as the `deployer` user, then uses `sudo su` to become the root user on those nodes, because this is simplest to configure.  You can use SSH a different way, but if you do, be prepared to modify some of the example commands below.
+- Generally, this guide uses SSH to connect to each node as the `deployer` user, then uses `sudo su` to become the root user on those nodes, because this is simplest to configure.  You can use SSH a different way, but if you do, be prepared to modify some example commands below.
 
 ### Prerequisite Skills
 
