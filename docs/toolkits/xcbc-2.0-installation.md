@@ -490,11 +490,11 @@ information (again, from `group_vars/all`) in the Warewulf database. At that poi
 may boot your compute nodes any time after the role finishes running, and they should
 receive a PXE boot image from the headnode as in the automatic method.
 
-6\. `ansible-playbook -i inventory/headnode -t nodes_vivify headnode.yml`
-This final role will "bring your nodes to life" by starting the necessary services 
-on the headnode and compute nodes, such as slurmctld (on the headnode), 
-slurmd (on the compute nodes), and munge (used by slurm on all nodes for 
-authentication).
+In the case you want to add new nodes after the image is built, you can do it in two ways:
+
+1\. If you used the auto-detect option to begin with, simply run the 'wwnodescan' utility with appropriate starting ranges/flags and gradually boot the new nodes; I often refer to the task withing compute_build_nodes to get the syntax correct.
+
+2\. If you're using the manual inventory method, just add the new nodes to your inventory list in group_vars/all, alongside existing nodes, and just re-run compute_build_nodes (or login_, gpu_, etc.) with the new list. This one is a bit cleaner with the previous in that you have to create a nice list of all your nodes with MAC addresses and ip's, but also requires you to gather those beforehand. 
 
 Testing the scheduler 
 ---------------------
