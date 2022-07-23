@@ -1,3 +1,3 @@
 # OpenStack Operations and Maintenance
 
-(placeholder)
+This page is a work in progress, more content to follow.

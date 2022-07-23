@@ -1,5 +1,5 @@
 # OpenStack Toolkit Overview
 
-![OpenStack Toolkit Overview](../img/openstack-toolkit-overview.jpg)
+This page is a work in progress, more content to follow.
 
-(placeholder)
+![OpenStack Toolkit Overview](../img/openstack-toolkit-overview.jpg)

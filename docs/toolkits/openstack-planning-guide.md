@@ -1,5 +1,7 @@
 # OpenStack Cloud Planning Guide
 
+This page is a work in progress, more content to follow.
+
 ## Orientation to OpenStack
 
 ### Control Plane and Data Plane
