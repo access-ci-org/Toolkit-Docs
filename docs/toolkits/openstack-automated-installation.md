@@ -163,7 +163,7 @@ Third, make an initial SSH connection from the deployment node (root user) to ea
 
 ### Install Dependencies
 
-Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-dependencies>
+On the deployment node, follow the steps in this section: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-dependencies>
 
 From here on, use the "using a virtual environment" steps -- this avoids polluting the Python packages that are controlled by the system's package manager. Note that you'll need to replace `/path/to/venv` with a real filesystem path. This guide will use `/root/kolla-ansible-venv`.
 
@@ -218,6 +218,8 @@ forks=100
 
 In `/etc/kolla/multinode`, populate the first section of the file like this, replacing everything up until `[baremetal:children]`:
 
+Change the hostnames if your nodes are named differently. Note the range specification in `compute[0:1]` which matches on multiple nodes. If you don't want to use this, you can use a separate line per node, like `compute0 ansible_user=deployer become=true`.
+
 ```ini
 [control]
 ctl0 ansible_connection=local
@@ -243,6 +245,7 @@ control
 
 Run this from the deployment node:
 ```shell
+cd /etc/kolla
 ansible -i multinode all -m ping
 ```
 The output should show a successful connection for all nodes.
@@ -263,10 +266,10 @@ Next, modify the contents of `/etc/kolla/globals.yml`.
 The following steps simplify [this section](https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#kolla-globals-yml) of the upstream docs.
 
 
-Add this line to the file, which will instruct Kolla Ansible to set up a virtual environment on the target hosts:
+Add these lines to the file (anywhere after the first line with three dashes), which will instruct Kolla Ansible to set up a virtual environment on the target hosts:
 
 ```yaml
-virtualenv: "/root/kolla-ansible-target-venv"
+virtualenv: "/home/kolla/kolla-ansible-target-venv"
 virtualenv_site_packages: true
 ```
 
@@ -292,7 +295,7 @@ kolla_internal_vip_address: "192.168.122.9"
 
 (Do not manually configure a network interface with this IP address -- Kolla Ansible will set it up.)
 
-After you save `globals.yml`, you can run `grep '^[^#]' globals.yml` to see all the lines that are _not_ commented out. Confirm that the output contains at least these four lines:
+Save and close `globals.yml`. After that, you can run `grep '^[^#]' globals.yml` to see all the lines that are _not_ commented out. Confirm that the output contains at least these six lines:
 
 ```yaml
 virtualenv: "/home/kolla/kolla-ansible-target-venv"
@@ -350,3 +353,16 @@ This may take a while. At the end, you should have a working cloud!
 ## Test Your Cloud
 
 Follow these steps to test your cloud: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#using-openstack>
+
+
+For the last command, use `/root/kolla-ansible-venv/share/kolla-ansible/init-runonce`. This will create network resources, a Glance image, some flavors, and show you a command to create an instance.
+
+```shell
+openstack server create --image cirros --flavor m1.tiny --key-name mykey --network demo-net demo1
+```
+
+Running this command will create your first OpenStack instance! You can follow its build process by noting the contents of the `id` field and passing it to `openstack server show`, like:
+
+```shell
+openstack server show b09331bf-dd29-4b06-949f-7b08172d124c
+```
