@@ -167,7 +167,7 @@ On the deployment node, follow the steps in this section: <https://docs.openstac
 
 From here on, use the "using a virtual environment" steps -- this avoids polluting the Python packages that are controlled by the system's package manager. Note that you'll need to replace `/path/to/venv` with a real filesystem path. This guide will use `/root/kolla-ansible-venv`.
 
-So, enter these commands:
+Following this section, we enter these commands:
 
 ```bash
 apt update
@@ -183,7 +183,7 @@ If you exit your shell, you must re-activate the virtual environment (run `sourc
 
 ### Install Kolla Ansible itself
 
-Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-kolla-ansible-for-deployment-or-evaluation>
+The following commands simplify and extend [this section](https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-kolla-ansible-for-deployment-or-evaluation) of the upstream documentation.
 
 ```
 pip install git+https://opendev.org/openstack/kolla-ansible@stable/yoga
@@ -195,7 +195,7 @@ cp /root/kolla-ansible-venv/share/kolla-ansible/ansible/inventory/* /etc/kolla
 
 ### Install Ansible Galaxy Requirements
 
-Follow these steps on the deployment node: <https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-ansible-galaxy-requirements>
+The following command represents [this section](https://docs.openstack.org/kolla-ansible/yoga/user/quickstart.html#install-ansible-galaxy-requirements) of the upstream documentation.
 
 ```
 kolla-ansible install-deps
