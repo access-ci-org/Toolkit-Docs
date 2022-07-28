@@ -26,8 +26,12 @@ pages:
     - Installation: 'toolkits/vc-installation-js2.md'
   - Container Template Library: 
     - Quick Start Guide: 'toolkits/ctl/ctlquick.md'
-  - OpenStack Installation:
-    - Openstack Installation Guide: 'toolkits/OpenstackInstallation.md'
+  - OpenStack Cloud Toolkit:
+    - OpenStack Toolkit Overview: 'toolkits/openstack-overview.md'
+    - OpenStack Planning: 'toolkits/openstack-planning-guide.md'
+    - OpenStack Manual Installation: 'toolkits/OpenstackInstallation.md'
+    - OpenStack Automated Installation: 'toolkits/openstack-automated-installation.md'
+    - OpenStack Operations and Maintenance: 'toolkits/openstack-operations-maintenance.md'
 - Contact Us: 'contact-us.md'
 - Contributing: 'contributions.md'
 
