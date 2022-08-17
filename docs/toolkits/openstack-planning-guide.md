@@ -4,6 +4,31 @@
 
 [![OpenStack Diagram](../img/openstack-diagram.jpeg)](../img/openstack-diagram.jpeg)
 
+OpenStack is a set of inter-operable services that, when combined, deliver a complete cloud infrastructure solution. With this solution, OpenStack users build virtual technology infrastructure to support their computing, data storage, and networking workloads.
+
+The most fundamental OpenStack services to know about are:
+
+| Service type | OpenStack name | What it gets you                        | AWS Equivalent |
+|--------------|----------------|-----------------------------------------|----------------|
+| identity     | Keystone       | Users and access control for the cloud  | IAM            |
+| disk image   | Glance         | Operating systems for virtual computers | N/A            |
+| computing    | Nova           | Virtual computers                       | EC2            |
+| networking   | Neutron        | Software-defined network resources      | VPC            |
+
+Some other commonly-adopted services include:
+
+| Service type            | OpenStack name | What it gets you                        | AWS Equivalent     |
+|-------------------------|----------------|-----------------------------------------|--------------------|
+| dashboard               | Horizon        | A web interface for using OpenStack     | Management Console |
+| block storage           | Cinder         | Virtual disk drives                     | EBS                |
+| object storage          | Swift          | Data storage buckets                    | S3                 |
+| filesystem              | Manila         | Virtual shared folders                  | EFS                |
+| bare metal              | Ironic         | Real, physical computers                | EC2 Bare Metal     |
+| DNS                     | Designate      | DNS host records                        | Route 53           |
+| orchestration           | Heat           | Automated control of OpenStack services | CloudFormation     |
+| container orchestration | Magnum         | Push-button Kubernetes clusters         | EKS                |
+
+
 ### Control Plane and Data Plane
 
 ### Networking
