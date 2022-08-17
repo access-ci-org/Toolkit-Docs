@@ -4,7 +4,7 @@
 
 [![OpenStack Diagram](../img/openstack-diagram.jpeg)](../img/openstack-diagram.jpeg)
 
-OpenStack is a set of inter-operable services that, when combined, deliver a complete cloud infrastructure solution. With this solution, OpenStack users build virtual technology infrastructure to support their computing, data storage, and networking workloads.
+OpenStack is a set of inter-operable software services that combine to deliver a cloud infrastructure solution. On top of OpenStack, users build virtual information technology infrastructure to support their computing, data storage, and networking needs.
 
 The most fundamental OpenStack services to know about are:
 
@@ -30,6 +30,41 @@ Some other commonly-adopted services include:
 
 
 ### Control Plane and Data Plane
+
+In a large distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
+
+First, let's look at the control plane. It's a sub-set of the diagram at the top of this page.
+
+[![OpenStack Diagram](../img/openstack-diagram-control-plane-only.jpeg)](../img/openstack-diagram-control-plane-only.jpeg)
+
+An OpenStack control plane has a few layers. At the bottom is at least one physical computer (a.k.a. server) to run the control plane services.
+
+The next layer is infrastructure services. These are not part of OpenStack per se, but OpenStack services depend on them to deliver a functioning cloud.
+
+| Service type      | Name(s)                                         | What it does                                              |
+|-------------------|-------------------------------------------------|-----------------------------------------------------------|
+| Database          | MariaDB or MySQL (optionally in Galera cluster) | Stores the persistent state of the control plane          |
+| Message broker    | RabbitMQ                                        | Delivers messages between service components              |
+| API load balancer | HAProxy                                         | Routes and secures network requests to OpenStack services |
+
+
+
+
+
+### Load Balancing and High Availability
+
+The entire OpenStack control plane can be load-balanced and/or high-availability.
+
+When configured correctly, this means that every
+
+This means
+
+LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and hundreds of compute nodes. LB/HA is not essential when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
+
+If you are 
+
+### Infrastructure Services
+
 
 ### Networking
 
