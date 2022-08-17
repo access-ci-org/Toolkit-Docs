@@ -8,7 +8,7 @@ OpenStack is a set of inter-operable services that, when combined, deliver a com
 
 The most fundamental OpenStack services to know about are:
 
-| Service type | OpenStack name | What it gets you                        | AWS Equivalent |
+| Service type | OpenStack name | What it delivers to users               | AWS Equivalent |
 |--------------|----------------|-----------------------------------------|----------------|
 | identity     | Keystone       | Users and access control for the cloud  | IAM            |
 | disk image   | Glance         | Operating systems for virtual computers | N/A            |
@@ -17,7 +17,7 @@ The most fundamental OpenStack services to know about are:
 
 Some other commonly-adopted services include:
 
-| Service type            | OpenStack name | What it gets you                        | AWS Equivalent     |
+| Service type            | OpenStack name | What it delivers to users               | AWS Equivalent     |
 |-------------------------|----------------|-----------------------------------------|--------------------|
 | dashboard               | Horizon        | A web interface for using OpenStack     | Management Console |
 | block storage           | Cinder         | Virtual disk drives                     | EBS                |
