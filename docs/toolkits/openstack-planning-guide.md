@@ -59,6 +59,7 @@ To build a basic cloud with this guide, you need basic Linux systems administrat
 
 To build a large-scale, highly-available cloud to support large, downtime-sensitive, and/or mission-critical workloads, you will also need to develop familiarity with:
 
+- Configuration management systems such as [Ansible](https://docs.ansible.com/ansible/latest/index.html)
 - Distributed data storage systems such as [Ceph](https://en.wikipedia.org/wiki/Ceph_(software))
 - Software-defined networking technologies such as [VLAN](https://en.wikipedia.org/wiki/VLAN)s, [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN), Open vSwitch; optionally [BGP in the Data Center](https://www.nvidia.com/en-us/networking/border-gateway-protocol/) and [routing on the host](https://codingpackets.com/blog/linux-routing-on-the-host-with-frr/)
 - High-availability technologies like [keepalived](https://keepalived.readthedocs.io/en/latest/introduction.html)
