@@ -2,7 +2,15 @@
 
 ## Orientation to OpenStack
 
-OpenStack is a set of inter-operable software services that combine to deliver a cloud infrastructure solution. On top of OpenStack, users build virtual information technology infrastructure to support their computing, data storage, and networking needs.
+OpenStack is a set of inter-operable software services that combine to deliver a cloud infrastructure solution. On top of OpenStack, users build virtual information technology solutions to support their computing, data storage, and networking needs.
+
+Cloud systems provide many types of resources, but the most basic types include the following.
+
+- Instance: a virtual computer that runs software and containers. An instance can be used as a workstation, a server, or as a worker node in a larger cluster.
+- Volume: a virtual hard disk drive that stores data. It can be small (under a gigabyte) or very large (many terabytes).
+- Floating IP address: a network address that provides connectivity to your instance so that you can host things like web applications.
+
+On a cloud, users can create, manage, and delete these virtual resources on-demand. This flexibility allows technology-powered projects at your organization to grow and evolve quickly, without the need to buy and set up dedicated physical IT hardware for each of them.
 
 ### How is an OpenStack Cloud different from a high-performance computing (HPC) system?
 
