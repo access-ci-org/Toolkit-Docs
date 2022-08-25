@@ -55,13 +55,13 @@ For smaller organizations, and organizations with less technology-demanding miss
 
 ### What skills do I need to build a cloud?
 
-To build a cloud with this guide, you need basic Linux systems administrator skills. These are detailed in the [OpenStack Automated Installation Guide](openstack-automated-installation.md#prerequisite-skills).
+To build a basic cloud with this guide, you need basic Linux systems administrator skills. These are detailed in the [OpenStack Automated Installation Guide](openstack-automated-installation.md#prerequisite-skills).
 
-To build a large-scale highly-available cloud to support large, downtime-sensitive, and/or mission-critical workloads, you also need to develop familiarity with:
+To build a large-scale, highly-available cloud to support large, downtime-sensitive, and/or mission-critical workloads, you will also need to develop familiarity with:
 
 - Distributed data storage systems such as [Ceph](https://en.wikipedia.org/wiki/Ceph_(software))
-- Software-defined networking technologies such as [VLAN](https://en.wikipedia.org/wiki/VLAN)s, [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN), Open vSwitch, possibly [BGP](https://en.wikipedia.org/wiki/Border_Gateway_Protocol)
-- TODO, finish this
+- Software-defined networking technologies such as [VLAN](https://en.wikipedia.org/wiki/VLAN)s, [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN), Open vSwitch; optionally [BGP in the Data Center](https://www.nvidia.com/en-us/networking/border-gateway-protocol/) and [routing on the host](https://codingpackets.com/blog/linux-routing-on-the-host-with-frr/)
+- High-availability technologies like [keepalived](https://keepalived.readthedocs.io/en/latest/introduction.html)
 
 ### OpenStack Services and Components
 
