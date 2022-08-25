@@ -41,7 +41,7 @@ Another difference is scale: the cloud that you build will likely be orders of m
 
 As a user of a commercial cloud, you are also susceptible to varying degrees of vendor lock-in. To programmatically manage resources on one of the three largest commercial clouds is to use proprietary APIs that do not natively inter-operate with each other. Commercial clouds also offer proprietary services (like [AWS Lambda](https://en.wikipedia.org/wiki/AWS_Lambda)), which can be useful, but clients become locked into using these services. There is often a vendor-neutral alternative to a given vendor-specific service which still works on the commercial provider's infrastructure. (One example is [Fission](https://fission.io) as an alternative to AWS Lambda.)
 
-It should not be under-stated how convenient it is to have someone else maintain a cloud for you! This toolkit will get you started with a basic cloud system, but to design, build, operate, and maintain a performant, large-scale, production-quality cloud, you must develop specialized skills on your team (or in yourself), enumerated in the section below. Any IT engineer can learn these skills, but they go well beyond basic Linux systems administration. At a research institution, these are difficult skills to hire for. This guide will get you on your way, but understand it is a journey.
+It should not be under-stated how convenient it is to have someone else maintain a cloud for you! This toolkit will get you started with a basic cloud system, but to design, build, operate, and maintain a performant, large-scale, production-quality cloud, you must develop specialized skills on your team (or in yourself), enumerated in the section below. Any IT engineer can learn these skills, but they go well beyond basic Linux systems administration. At a research institution, these are difficult skills to hire for. Still, this guide will help you begin the journey.
 
 For smaller organizations, and organizations with less technology-demanding missions, savvy consumption of commercial cloud services may support the mission more efficiently than building and operating an OpenStack cloud in-house. Researchers at US-based organizations may also qualify for an allocation on [Jetstream2](https://jetstream-cloud.org), a national-scale, production-quality OpenStack cloud for science and engineering research.
 
@@ -70,17 +70,19 @@ The most fundamental OpenStack services to know about are:
 
 Some other commonly-adopted services include:
 
-| Service type            | OpenStack name | What it delivers to users               | AWS Equivalent     |
-|-------------------------|----------------|-----------------------------------------|--------------------|
-| dashboard               | Horizon        | A web interface for using OpenStack     | Management Console |
-| block storage           | Cinder         | Virtual disk drives                     | EBS                |
-| object storage          | Swift          | Data storage buckets                    | S3                 |
-| filesystem              | Manila         | Virtual shared folders                  | EFS                |
-| bare metal              | Ironic         | Real, physical computers                | EC2 Bare Metal     |
-| DNS                     | Designate      | DNS host records                        | Route 53           |
-| orchestration           | Heat           | Automated control of OpenStack services | CloudFormation     |
-| container orchestration | Magnum         | Push-button Kubernetes clusters         | EKS                |
+| Service type            | OpenStack name | What it delivers to users                | AWS Equivalent     |
+|-------------------------|----------------|------------------------------------------|--------------------|
+| dashboard for sysadmins | Horizon        | A web interface for using OpenStack      | Management Console |
+| dashboard for users     | Exosphere[^1]  | A web interface for less-technical users | Lightsail          |
+| block storage           | Cinder         | Virtual disk drives                      | EBS                |
+| object storage          | Swift          | Data storage buckets                     | S3                 |
+| filesystem              | Manila         | Virtual shared folders                   | EFS                |
+| bare metal              | Ironic         | Real, physical computers                 | EC2 Bare Metal     |
+| DNS                     | Designate      | DNS host records                         | Route 53           |
+| orchestration           | Heat           | Automated control of OpenStack services  | CloudFormation     |
+| container orchestration | Magnum         | Push-button Kubernetes clusters          | EKS                |
 
+[^1]: [Exosphere](https://gitlab.com/exosphere/exosphere) is developed independently of the core OpenStack projects, but included here for its focus on making OpenStack clouds more usable for researchers.
 
 ### Control Plane and Data Plane
 
@@ -92,7 +94,7 @@ First, let's look at the control plane. It's a sub-set of the diagram at the top
 
 An OpenStack control plane has a few layers. At the bottom is at least one physical computer (a.k.a. server) to run the control plane services.
 
-The next layer is infrastructure services. These are not part of OpenStack per se, but OpenStack services depend on them to deliver a functioning cloud.
+The next layer is infrastructure services. These are not part of OpenStack per se, but OpenStack services depend on all them to deliver a functioning cloud.
 
 | Service type      | Name(s)                                         | What it does                                              |
 |-------------------|-------------------------------------------------|-----------------------------------------------------------|
@@ -115,6 +117,8 @@ This means
 LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and hundreds of compute nodes. LB/HA is not essential when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
 
 If you are 
+
+TODO write this section
 
 ### Infrastructure Services
 
