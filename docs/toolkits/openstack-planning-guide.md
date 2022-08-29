@@ -92,9 +92,13 @@ Some other commonly-adopted services include:
 
 [^1]: [Exosphere](https://gitlab.com/exosphere/exosphere) is developed independently of the core OpenStack projects, but included here for its focus on making OpenStack clouds more usable for researchers.
 
+TODO explain that each service can have multiple components
+
 #### Control Plane and Data Plane
 
 In a large distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
+
+TODO talk about APIs
 
 First, let's look at the control plane. It's a sub-set of the diagram at the top of this page.
 
@@ -111,10 +115,7 @@ The next layer is infrastructure services. These are not part of OpenStack per s
 | API load balancer | HAProxy                                         | Routes and secures network requests to OpenStack services |
 
 
-
-#### Infrastructure Services
-
-TODO
+TODO FINISH
 
 #### Types of Storage
 
@@ -167,7 +168,7 @@ TODO
 
 ### Choose Your Deployment Method
 
-We offer two deployment options: manual (via shell commands) and automated (via Ansible and Docker). You can think of these as using either hand tools or power tools to build your cloud.
+This toolkit offers two deployment options: manual (via shell commands) and automated (via Ansible and Docker). You can think of these as using either hand tools or power tools to build your cloud.
 
 Use the manual deployment when:
 - You want to learn about each of the OpenStack services, and how they fit together
