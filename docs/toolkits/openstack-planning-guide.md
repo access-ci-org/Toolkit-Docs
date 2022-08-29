@@ -2,44 +2,6 @@
 
 ## Orientation to OpenStack
 
-### How is an OpenStack Cloud different from a high-performance computing (HPC) system?
-
-### How is an OpenStack Cloud that I build different from a public cloud like Amazon Web Services, Google Cloud Platform, or Microsoft Azure?
-
-### Which skills do I need to buuild a cloud?
-
-### OpenStack Services and Components
-
-#### Control Plane and Data Plane
-
-#### Infrastructure Services
-
-#### Types of Storage
-
-#### Types of Networking
-
-### Load Balancing and High Availability
-
-## Key Decisions
-
-### General Hardware Considerations
-
-### Choose Your Control Plane
-
-### Choose Your Storage Layout
-
-### Choose Your Network Layout
-
-### Choose Your Deployment Method
-
-## References
-
----
-
-# Old Content to move into above outline
-
-## Orientation to OpenStack
-
 OpenStack is a set of inter-operable software services that combine to deliver a cloud infrastructure solution. On top of OpenStack, users build virtual information technology solutions to support their computing, data storage, and networking needs.
 
 Cloud systems provide many types of resources, but the most basic types include the following.
@@ -57,8 +19,8 @@ While HPC systems are architected to optimize parallel processing speed, cloud s
 The following things are generally easy for a cloud to provide to users in a self-service way, while being difficult or infeasible for a shared-access HPC system to offer its users.
 
 - Root access to virtual computers, which gets the user:
-    - Ability to install _any_ software, without the need to ask an administrator
-    - Ability to use a custom kernel or even a custom operating system
+  - Ability to install _any_ software, without the need to ask an administrator
+  - Ability to use a custom kernel or even a custom operating system
 - Alongside this root access, there is still strong multi-tenancy to prevent a user from accessing or modifying another project's data.
 - Ability to run a full graphical desktop environment, and any graphical software inside it.
 - Ability to run persistent servers (e.g. [science gateways](https://en.wikipedia.org/wiki/Science_gateway)), possibly for years.
@@ -74,8 +36,7 @@ Cloud systems also offer a variety of data storage semantics, from virtual hard 
 
 From the user's perspective, the largest tradeoff is that computation-intensive workloads (especially massively-parallel, [MPI](https://en.wikipedia.org/wiki/Message_Passing_Interface)-based workloads) are generally slower on a cloud than on an HPC system. There is a performance penalty (generally on the order of 10%) with the hardware virtualization and software-defined networking in a cloud environment. There is also variable performance with data storage, depending on how it is backed and exposed.
 
-
-### How is an OpenStack Cloud that I build different from Amazon Web Services, Google Cloud Platform, or Microsoft Azure?
+### How is an OpenStack Cloud that I build different from a public cloud like Amazon Web Services, Google Cloud Platform, or Microsoft Azure?
 
 They often behave similarly, and they can serve the same use cases!
 
@@ -91,7 +52,7 @@ It should not be under-stated how convenient it is to have someone else maintain
 
 For smaller organizations, and organizations with less technology-demanding missions, savvy consumption of commercial cloud services may support the mission more efficiently than building and operating an OpenStack cloud in-house. Researchers at US-based organizations may also qualify for an allocation on [Jetstream2](https://jetstream-cloud.org), a national-scale, production-quality OpenStack cloud for science and engineering research.
 
-### What skills do I need to build a cloud?
+### Which skills do I need to build a cloud?
 
 To build a basic cloud with this guide, you need basic Linux systems administrator skills. These are detailed in the [OpenStack Automated Installation Guide](openstack-automated-installation.md#prerequisite-skills).
 
@@ -131,7 +92,7 @@ Some other commonly-adopted services include:
 
 [^1]: [Exosphere](https://gitlab.com/exosphere/exosphere) is developed independently of the core OpenStack projects, but included here for its focus on making OpenStack clouds more usable for researchers.
 
-### Control Plane and Data Plane
+#### Control Plane and Data Plane
 
 In a large distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
 
@@ -151,7 +112,24 @@ The next layer is infrastructure services. These are not part of OpenStack per s
 
 
 
+#### Infrastructure Services
 
+TODO
+
+#### Types of Storage
+
+This guide will set up storage for images (stored on the control plane host) and instance root disks (stored locally on compute hosts). Here is an orientation to other types of storage you may need in your cloud.
+
+- Instance root disks
+- Image storage
+- Block storage (Cinder volumes)
+- Object storage (Swift, Ceph RADOS)
+- Shared filesystem (Manila, CephFS)
+
+
+#### Types of Networking
+
+TODO
 
 ### Load Balancing and High Availability
 
@@ -163,26 +141,31 @@ This means
 
 LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and hundreds of compute nodes. LB/HA is not essential when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
 
-If you are 
+If you are
 
 TODO write this section
 
-### Infrastructure Services
+## Key Decisions
 
+TODO
 
-### Networking
+### General Hardware Considerations
 
-### Types of Storage
+TODO
 
-This guide will set up storage for images (stored on the control plane host) and instance root disks (stored locally on compute hosts). Here is an orientation to other types of storage you may need in your cloud.
+### Choose Your Control Plane
 
-- Instance root disks
-- Image storage
-- Block storage (Cinder volumes)
-- Object storage (Swift, Ceph RADOS)
-- Shared filesystem (Manila, CephFS)
+TODO
 
-## Choosing a Deployment Method
+### Choose Your Storage Layout
+
+TODO
+
+### Choose Your Network Layout
+
+TODO
+
+### Choose Your Deployment Method
 
 We offer two deployment options: manual (via shell commands) and automated (via Ansible and Docker). You can think of these as using either hand tools or power tools to build your cloud.
 
@@ -196,7 +179,7 @@ Use the automated deployment when:
 - You will have more than a small handful of nodes to deploy
 - You also want automated upgrades for new versions of OpenStack
 
-### References
+## References
 
 - [Deploying OpenStack - what options do we have?](https://www.youtube.com/watch?v=8ODdvCogwl8) (from 2019 summit)
   - [Summary](https://imgur.com/Ux5Kyey) from one of the slides
