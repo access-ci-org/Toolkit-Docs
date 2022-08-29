@@ -2,6 +2,44 @@
 
 ## Orientation to OpenStack
 
+### How is an OpenStack Cloud different from a high-performance computing (HPC) system?
+
+### How is an OpenStack Cloud that I build different from a public cloud like Amazon Web Services, Google Cloud Platform, or Microsoft Azure?
+
+### Which skills do I need to buuild a cloud?
+
+### OpenStack Services and Components
+
+#### Control Plane and Data Plane
+
+#### Infrastructure Services
+
+#### Types of Storage
+
+#### Types of Networking
+
+### Load Balancing and High Availability
+
+## Key Decisions
+
+### General Hardware Considerations
+
+### Choose Your Control Plane
+
+### Choose Your Storage Layout
+
+### Choose Your Network Layout
+
+### Choose Your Deployment Method
+
+## References
+
+---
+
+# Old Content to move into above outline
+
+## Orientation to OpenStack
+
 OpenStack is a set of inter-operable software services that combine to deliver a cloud infrastructure solution. On top of OpenStack, users build virtual information technology solutions to support their computing, data storage, and networking needs.
 
 Cloud systems provide many types of resources, but the most basic types include the following.
