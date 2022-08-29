@@ -51,9 +51,31 @@ This will ask you for a password.  You can pass this information to each user to
 openstack user delete <user name>
 ```
 
-The newly created user will need a project to operate on as well.
+The newly created user will need a project to operate on as well.  If they don't have a project, you can create one with:
+``` bash
+openstack project create --domain <domain name> --description "<A good description here>" <project name>
+```
 
-TO-DO: Add in steps for adding allocations and adjusting quotas.
+In OpenStack, you don't simply add a user to a project.  There needs to be a role associaction created, associating the user and the project.  The role itself can be a priviledged user or standard user.  If you don't have a standard user role created, you can create one with:
+``` bash
+openstack role create <role name>
+```
+Role associations are created with:
+``` bash
+openstack role add --project <project name> --user <user name> <role name>
+```
+
+To remove the role association, run:
+``` bash
+openstack role remove --user <user name> --project <project name> <role name>
+```
+
+Oftentimes, different projects or users will have different needs of the OpenStack cloud.  This can lead to the default quotas not allowing them to do something that fits their workflow.  For example, perhaps they need more than the default quota of volumes.  These can be adjusted with the CLI by running:
+``` bash
+openstack quota set --volumes <new volume quota> <project name>
+```
+Note that quotas are set per project and not per user.
+
 
 
 ### Maintenance
@@ -62,16 +84,23 @@ TO-DO: Add in steps for adding allocations and adjusting quotas.
 
 #### NTP
 	- What NTP Errors look like
+		The biggest offender here is going to be any clock drift errors in the logs and odd behavior by computes on some isolated VMs.
 	- How to fix
+		Usually this is either two issues.  First, the time daemon running on your node may simply need a restart.  The second is that it could simply be a misconfiguration on said time daemon.
 
 #### Rabbit MQ
 
 	- Checks:
+		To check the status of your RabbitMQ cluster, run the following on one of the rabbitmq nodes:
 ``` bash
 rabbitmqctl cluster_status
 ```
+Some things to look for here, are any errors or alarms under the [Alarms] section.
+
 	- What rabbitMQ errors look like
+		rabbitMQ errors can be tough to diagnose.  All the openstack services send messages through rabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.
 	- How to fix
+		The simplest fix is usually going to be a dead rabbitMQ service on one of the nodes.  Usually a restart can fix these.
 
 #### Mysql
 
@@ -90,7 +119,9 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 And verify the cluster count matches the number of nodes in your database cluster.
 
 	- What MYSQL errors look like
+		If MYSQL is causing issues, you'll usually get a 503 error when attempting to run commands from the CLI.
 	- How to fix
+		This could be as simple as a dead mysql daemon on one of your nodes.  You can diagnose this by running through the checks above.  
 	- Database Discrepancies
 		Throughout the life of your cloud, you may come into issues where the database and openstack reflect different information.  This could be a VM that shows a host on one machine but it's actually on another, a volume that is stuck in a `reserved` state but won't change back to active/available, etc.  To fix this, we need to log into the MYSQL cluster by running `mysql` and updating the discrepancy with `update ITEM set VALUE=DESIRED_VALUE  where id='UUID';`.  You can verify which specific item(s) you'll adjust by adjusting the formula to, `show ITEM where id='UUID';`.
 
@@ -104,9 +135,26 @@ openstack compute service list
 
 This will list all nova services and show if any are down or not running.  A "XXX" status simply means that service has missed a heartbeat message in rabbitmq to the control node.  A "down" status means the service has missed enough to be considered off or problematic.
 	- What Nova errors look like
+		Nova errors will generally be the case where you are getting "No valid hosts available" when their should be.
 	- How to Fix
+		This will simply be the case where we see a dead service on some/all nodes.  Running through the checks will show any/all down nodes.  OpenStack won't deploy new VMs to nova-compute services that are down.  Attempting a restart should bring the services back online or show some errors in the logs about what is causing the nova-compute service to go down.
 	- How to take down nodes for maintenance
-
+		Eventually, you will have to take some compute nodes offline for maintenance in some capacity.  The first thing you want to do, is set those nova-computes to disabled:
+``` bash
+openstack compute service set --disable --disable-reason maintenance <node hostname> nova-compute
+```
+Then, check to see if the node has VMs running on it.  You can do this with:
+``` bash
+openstack host show <node hostname>
+```
+If this has any CPU/Memory/Disk used, it probably has VMs running on it and they need to be migrated to other nodes.  We can do this with:
+``` bash
+nova host-evacuate-live <node hostname>
+```
+This will send the VMs on that node to other availabe nodes.  Once this completes, the node will be out of production and available for the maintenance required.  After said maintenance is completed, you can bring the node back into production with:
+``` bash
+openstack compute service set --enable <node hostname> nova-compute
+```
 
 #### Neutron
 
@@ -119,11 +167,15 @@ openstack network agent list
 
 This is similar to the previous command, except it shows all the neutron services.
 	- What Neutron errors look like
+		The canary of the coal mine here is usually some dead services on the Neutron check commands.  However, if users are reporting that their VMs are having networking woes, this could also be a good indicator.
 	- How to fix
+		If you see some dead services or an isolated node that is exclusively having issues, you should restart the service and see if that alleviates the issue.  Restarting the Neutron services on the controller nodes leads to extensive downtime, depending on how many networks exist on your cloud, as it takes an amount of time per network to rebuild each network.  Restarting these services are only recommended as a last resort.
 
 #### Keystone
 	- What Keystone errors look like
+		I'm not sure there are any keystone specific errors that commonly happen.  Other than Users, projects, and quotas, keystone generally is reliable.
 	- How to fix
+		Nothing to fix.
 
 
 This page is a work in progress, more content to follow.
