@@ -98,36 +98,33 @@ Some other commonly-adopted services include:
 
 A given OpenStack service may have multiple server-side components, and it may also communicate with other OpenStack services. The sections below explore this in greater detail.
 
-#### Control Plane and Data Plane
+#### Control Plane and Infrastructure Services
 
-In a large distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
+In a distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
 
-First, let's look at the control plane. It's a sub-set of the diagram at the top of this page.
+This section explores the architecture of the control plane. It's not necessary to understand all of this architecture prior to deploying your first cloud! You may find it helpful to learn by building and exploring a working system.
 
-[![OpenStack Diagram](../img/openstack-diagram-control-plane-only.jpeg)](../img/openstack-diagram-control-plane-only.jpeg)
+Please refer to the diagram further up this page. An OpenStack control plane has a few layers. At the bottom is at least one physical computer (a.k.a. server) to run the control plane services.
 
-An OpenStack control plane has a few layers. At the bottom is at least one physical computer (a.k.a. server) to run the control plane services.
+The next layer is infrastructure services. These are not part of OpenStack per se, but OpenStack services depend on all them to deliver a functioning cloud. The infrastructure services are:
 
-The next layer is infrastructure services. These are not part of OpenStack per se, but OpenStack services depend on all them to deliver a functioning cloud.
+| Service type      | Name(s)                                         | What it does                                                              |
+|-------------------|-------------------------------------------------|---------------------------------------------------------------------------|
+| Database          | MariaDB or MySQL (optionally in Galera cluster) | Stores the persistent state of the control plane                          |
+| Message broker    | RabbitMQ or Oslo messaging                      | Delivers messages between service components                              |
+| API reverse proxy | HAProxy                                         | Routes, load-balances, and secures network requests to OpenStack services |
 
-| Service type      | Name(s)                                         | What it does                                              |
-|-------------------|-------------------------------------------------|-----------------------------------------------------------|
-| Database          | MariaDB or MySQL (optionally in Galera cluster) | Stores the persistent state of the control plane          |
-| Message broker    | RabbitMQ                                        | Delivers messages between service components              |
-| API load balancer | HAProxy                                         | Routes and secures network requests to OpenStack services |
-
-
-TODO FINISH
-
-Tying this together, let's revisit the Nova architecture diagram:
-
-As the diagram below shows, OpenStack Nova has API server, scheduler, conductor, and compute components. Nova components also place API calls to Keystone, Neutron, Glance, and Cinder for certain operations.
+Generally, intra-service communication (between components of a service) uses the message broker, and inter-service communication uses the same HTTP (REST) APIs that users do. As an example, let's look at an architecture diagram for one OpenStack service, Nova.
 
 [![OpenStack Nova architecture](../img/nova-architecture.svg)](../img/nova-architecture.svg)
 
 ([Source of diagram](https://docs.openstack.org/nova/latest/admin/architecture.html))
 
-TODO FINISH
+Nova has several components: the API server, the scheduler, the conductor, and the compute agent. These components use the message broker (solid line) to communicate with each other, and they persist their state to the SQL database (dashed line). Nova components also place API calls to other services (Keystone, Neutron, Glance, and Cinder) for certain operations, and this communication (line with both dashes and dots) uses the HTTP APIs.
+
+The API reverse proxy service (generally HAProxy) has a few related jobs. HAProxy terminates [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) for connections to OpenStack APIs, and it proxies each request (i.e. API call) to a back-end worker process. In a load-balanced or highly-available control plane (which the LB/HA section explains in more detail), HAProxy routes traffic to one of multiple redundant back-ends. In a larger cloud deployment, HAProxy may provide both "internal" and "external" API endpoints for the OpenStack services, each on a different network.
+
+Finally, the named OpenStack services comprise the top layer of the control plane. This is the layer that API clients interact with.
 
 #### Types of Storage
 
@@ -139,6 +136,8 @@ This guide will set up storage for images (stored on the control plane host) and
 - Object storage (Swift, Ceph RADOS)
 - Shared filesystem (Manila, CephFS)
 
+
+TODO say more
 
 #### Types of Networking
 
