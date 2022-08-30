@@ -69,7 +69,9 @@ Here is a high-level overview of the services that comprise an OpenStack cloud.
 
 [![OpenStack Diagram](../img/openstack-diagram.jpeg)](../img/openstack-diagram.jpeg)
 
-Each OpenStack service delivers a specific kind of resource, or a few related resources. The most fundamental services to know about are:
+Each OpenStack service delivers a specific kind of resource, or a few related resources. Each service exposes a documented API that users (and other services use) to manage these resources.
+
+The most fundamental services to know about are:
 
 | Service type | OpenStack name | What it delivers to users               | AWS Equivalent |
 |--------------|----------------|-----------------------------------------|----------------|
@@ -100,8 +102,6 @@ A given OpenStack service may have multiple server-side components, and it may a
 
 In a large distributed system like an OpenStack cloud, there is a logical separation between the Control Plane and Data Plane. The control plane consists of the set of OpenStack services (and their dependencies) that _manage_ users' resources on the cloud. The data plane consists of the users' resources themselves. The data plane includes virtual computers, networks, and various types of data storage.
 
-TODO talk about APIs
-
 First, let's look at the control plane. It's a sub-set of the diagram at the top of this page.
 
 [![OpenStack Diagram](../img/openstack-diagram-control-plane-only.jpeg)](../img/openstack-diagram-control-plane-only.jpeg)
@@ -116,6 +116,16 @@ The next layer is infrastructure services. These are not part of OpenStack per s
 | Message broker    | RabbitMQ                                        | Delivers messages between service components              |
 | API load balancer | HAProxy                                         | Routes and secures network requests to OpenStack services |
 
+
+TODO FINISH
+
+Tying this together, let's revisit the Nova architecture diagram:
+
+As the diagram below shows, OpenStack Nova has API server, scheduler, conductor, and compute components. Nova components also place API calls to Keystone, Neutron, Glance, and Cinder for certain operations.
+
+[![OpenStack Nova architecture](../img/nova-architecture.svg)](../img/nova-architecture.svg)
+
+([Source of diagram](https://docs.openstack.org/nova/latest/admin/architecture.html))
 
 TODO FINISH
 
