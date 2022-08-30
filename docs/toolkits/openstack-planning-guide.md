@@ -63,16 +63,18 @@ To build a large-scale, highly-available cloud to support large, downtime-sensit
 - Software-defined networking technologies such as [VLAN](https://en.wikipedia.org/wiki/VLAN)s, [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN), Open vSwitch; optionally [BGP in the Data Center](https://www.nvidia.com/en-us/networking/border-gateway-protocol/) and [routing on the host](https://codingpackets.com/blog/linux-routing-on-the-host-with-frr/)
 - High-availability technologies like [keepalived](https://keepalived.readthedocs.io/en/latest/introduction.html)
 
-### OpenStack Services and Components
+### OpenStack Services
+
+Here is a high-level overview of the services that comprise an OpenStack cloud.
 
 [![OpenStack Diagram](../img/openstack-diagram.jpeg)](../img/openstack-diagram.jpeg)
 
-The most fundamental OpenStack services to know about are:
+Each OpenStack service delivers a specific kind of resource, or a few related resources. The most fundamental services to know about are:
 
 | Service type | OpenStack name | What it delivers to users               | AWS Equivalent |
 |--------------|----------------|-----------------------------------------|----------------|
 | identity     | Keystone       | Users and access control for the cloud  | IAM            |
-| disk image   | Glance         | Operating systems for virtual computers | N/A            |
+| disk image   | Glance         | Operating systems for virtual computers | AMI            |
 | computing    | Nova           | Virtual computers                       | EC2            |
 | networking   | Neutron        | Software-defined network resources      | VPC            |
 
@@ -92,7 +94,7 @@ Some other commonly-adopted services include:
 
 [^1]: [Exosphere](https://gitlab.com/exosphere/exosphere) is developed independently of the core OpenStack projects, but included here for its focus on making OpenStack clouds more usable for researchers.
 
-TODO explain that each service can have multiple components
+A given OpenStack service may have multiple server-side components, and it may also communicate with other OpenStack services. The sections below explore this in greater detail.
 
 #### Control Plane and Data Plane
 
