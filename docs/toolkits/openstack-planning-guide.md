@@ -62,6 +62,7 @@ To build a large-scale, highly-available cloud to support large, downtime-sensit
 - Distributed data storage systems such as [Ceph](https://en.wikipedia.org/wiki/Ceph_(software))
 - Software-defined networking technologies such as [VLAN](https://en.wikipedia.org/wiki/VLAN)s, [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN), Open vSwitch; optionally [BGP in the Data Center](https://www.nvidia.com/en-us/networking/border-gateway-protocol/) and [routing on the host](https://codingpackets.com/blog/linux-routing-on-the-host-with-frr/)
 - High-availability technologies like [keepalived](https://keepalived.readthedocs.io/en/latest/introduction.html)
+- Familiarity with the [CAP Theorem](https://en.wikipedia.org/wiki/CAP_theorem) for distributed systems
 
 ### OpenStack Services
 
@@ -128,16 +129,21 @@ Finally, the named OpenStack services comprise the top layer of the control plan
 
 #### Types of Storage
 
-This guide will set up storage for images (stored on the control plane host) and instance root disks (stored locally on compute hosts). Here is an orientation to other types of storage you may need in your cloud.
+An OpenStack cloud can offer several kinds of data storage for different workloads and use cases.
 
-- Instance root disks
-- Image storage
-- Block storage (Cinder volumes)
-- Object storage (Swift, Ceph RADOS)
-- Shared filesystem (Manila, CephFS)
+| Exposed Storage Type             | Use case                                    |
+|----------------------------------|---------------------------------------------|
+| Nova instance root disk          | Persistent state of each instance           |
+| Glance disk image                | Operating system template for new instances |
+| Cinder block storage (hard disk) | Hard drive to store data                    |
+| Swift object storage (bucket)    | Storage for cloud-native applications       |
+| Manila shared filesystem         | Folder shared between instances             |
 
+You don't need all of these to get started, but you may use more of them as your needs evolve. This guide will set up storage for Nova instance root disks (stored locally on each compute node) and Glance disk images (stored on the control plane node).
 
-TODO say more
+For the future, know that [Ceph](https://docs.ceph.com/en/quincy/) is a free and open-source distributed storage system that can deliver _all_ the storage types in the table above. Ceph is sometimes called the 'universal storage back-end' for an OpenStack cloud. A Ceph cluster can provide this in a performant and resilient way using commodity server hardware, which means a Ceph cluster can cost considerably less than vendor-specific Storage Area Networks (SAN) or Network-Attached Storage (NAS) systems.
+
+This guide does not cover setup of a Ceph cluster (or integration of Ceph with OpenStack), but the [Ceph documentation](https://docs.ceph.com/en/) will get you started.
 
 #### Types of Networking
 
