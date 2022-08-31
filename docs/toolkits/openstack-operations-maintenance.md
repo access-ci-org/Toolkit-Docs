@@ -117,19 +117,16 @@ Throughout the life of your cloud, you may come into issues where the database a
 
 #### Nova
 
-	- Checks:
 To check the nova status, source the Admin openrc file or [app credential](https://docs.openstack.org/keystone/yoga/user/application_credentials.html) and run:
 ```
 openstack compute service list
 ```
 
-This will list all nova services and show if any are down or not running.  A "XXX" status simply means that service has missed a heartbeat message in rabbitmq to the control node.  A "down" status means the service has missed enough to be considered off or problematic.
-	- What Nova errors look like
-		Nova errors will generally be the case where you are getting "No valid hosts available", when there should be hosts available.
-	- How to Fix
-		This will simply be the case where we see a dead service on some/all nodes.  Running through the checks will show any/all down nodes.  OpenStack won't deploy new VMs to nova-compute services that are down.  Attempting a restart should bring the services back online or show some errors in the logs about what is causing the nova-compute service to go down.
-	- How to take down nodes for maintenance
-		Eventually, you will have to take some compute nodes offline for maintenance in some capacity.  The first thing you want to do, is set those nova-computes to disabled:
+This will list all nova services and show if any are down or not running.  A "XXX" status simply means that service has missed a heartbeat message in rabbitmq to the control node.  A "down" status means the service has missed enoughheartbeats to be considered off or problematic.
+
+Nova errors will generally be the case where you are getting "No valid hosts available", when there should be hosts available.  This will simply be the case where we see a dead service on some/all nodes.  Running through the checks will show any/all down nodes.  OpenStack won't deploy new VMs to nova-compute services that are down.  Attempting a restart should bring the services back online or show some errors in the logs about what is causing the nova-compute service to go down.
+
+Eventually, you will have to take some compute nodes offline for maintenance in some capacity.  The first thing you want to do, is set those nova-computes to disabled:
 ``` bash
 openstack compute service set --disable --disable-reason maintenance <node hostname> nova-compute
 ```
@@ -152,24 +149,10 @@ openstack compute service set --enable <node hostname> nova-compute
 
 #### Neutron
 
-	- Checks:
 To check the Neutron services status, source the Admin openrc file or app credential and run:
 
 ```
 openstack network agent list
 ```
 
-This is similar to the previous command, except it shows all the neutron services.
-	- What Neutron errors look like
-		The canary of the coal mine here is usually some dead services on the Neutron check commands.  However, if users are reporting that their VMs are having networking woes, this could also be a good indicator.
-	- How to fix
-		If you see some dead services or an isolated node that is exclusively having issues, you should restart the service and see if that alleviates the issue.  Restarting the Neutron services on the controller nodes leads to extensive downtime, depending on how many networks exist on your cloud, as it takes an amount of time per network to rebuild each network.  Restarting these services are only recommended as a last resort.
-
-#### Keystone
-	- What Keystone errors look like
-		I'm not sure there are any keystone specific errors that commonly happen.  Other than Users, projects, and quotas, keystone generally is reliable.
-	- How to fix
-		Nothing to fix.
-
-
-This page is a work in progress, more content to follow.
+This is similar to the previous command, except it shows all the neutron services.  If users are reporting that their VMs are having networking woes, this could be a good indicator that Neutron is struggling.  Running the check command can give you an idea of how the Neutron services are operating.  If you see some dead services or an isolated node that is exclusively having issues, you should restart the service and see if that alleviates the issue.  Also, you may want to check the logs to see what caused the outage.  Restarting the Neutron services on the controller nodes leads to extensive downtime, depending on how many networks exist on your cloud, as it takes an amount of time per network to rebuild each network.  Restarting these services are only recommended as a last resort.
