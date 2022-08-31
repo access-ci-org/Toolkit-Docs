@@ -159,7 +159,7 @@ openstack compute service set --enable <node hostname> nova-compute
 #### Neutron
 
 	- Checks:
-To check the neutron services status, source the Admin openrc file or app credential and run:
+To check the Neutron services status, source the Admin openrc file or app credential and run:
 
 ```
 openstack network agent list
