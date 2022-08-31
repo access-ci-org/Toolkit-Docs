@@ -112,7 +112,7 @@ SSH to the MySQL node and log into the database with:
 Also, you can check the logs to make sure there are no discrepancies.
 
 	- Checks for a multiple node cluster:
-SSH to the MYSQL node and log into the database with:
+SSH to the MySQL node and log into the database with:
 `mysql`
 and run
 ```
