@@ -175,8 +175,6 @@ TODO write this section
 
 ## Key Decisions
 
-TODO
-
 ### General Hardware Considerations
 
 A common question is: _What kind of computer hardware do I need for an OpenStack cloud?_ Generally, you can use any computers that will run Linux. If you're starting out, you probably want machines with the common **[x86-64](https://en.wikipedia.org/wiki/X86-64) architecture**. (It is possible to deploy a cloud with ARM or some other micro-architecture, but this has implications for the deployment process and use cases, which this guide does not cover.) To support virtual machine instances, the CPUs in the compute nodes **must support [x86 hardware-assisted virtualization](https://en.wikipedia.org/wiki/X86_virtualization)**. This is a very common feature. Most CPUs have it, even in consumer-grade computers.
@@ -199,7 +197,7 @@ TODO
 
 TODO
 
-### Choose Your Deployment Method
+### Choose Your Deployment Method and Operating System
 
 This toolkit offers two deployment options: manual (via shell commands) and automated (via Ansible and Docker). You can think of these as using either hand tools or power tools to build your cloud.
 
@@ -212,6 +210,8 @@ Use the automated deployment when:
 - You want to use containers for your cloud's control plane
 - You will have more than a small handful of nodes to deploy
 - You also want automated upgrades for new versions of OpenStack
+
+Both of the deployment options in this toolkit assume use of the Ubuntu operating system for both the control plane and compute nodes. The cloud can be installed on other Linux-based distributions, but using them is outside the scope of this toolkit. In any case, the instances that you create on the cloud can use any operating system you want.
 
 ## References
 
