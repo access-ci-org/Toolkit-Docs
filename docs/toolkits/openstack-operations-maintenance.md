@@ -90,7 +90,7 @@ Note that quotas are set per project and not per user.
 	- How to fix
 		Usually this is either two issues.  First, the time daemon running on your node may simply need a restart.  The second is that it could simply be a misconfiguration on said time daemon.
 
-#### Rabbit MQ
+#### RabbitMQ
 
 	- Checks:
 		To check the status of your RabbitMQ cluster, run the following on one of the rabbitmq nodes:
