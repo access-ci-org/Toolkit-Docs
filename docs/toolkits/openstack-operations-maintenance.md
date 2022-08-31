@@ -53,7 +53,7 @@ openstack user delete <user name>
 
 The newly created user will need a project to operate on as well.  If they don't have a project, you can create one with:
 ``` bash
-openstack project create --domain <domain name> --description "<A good description here>" <project name>
+openstack project create --description "<A good description here>" <project name>
 ```
 
 In OpenStack, you don't simply add a user to a project.  There needs to be a role associaction created, associating the user and the project.  The role itself can be a priviledged user or standard user.  If you don't have a standard user role created, you can create one with:
