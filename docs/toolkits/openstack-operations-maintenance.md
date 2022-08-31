@@ -44,7 +44,7 @@ This is probably something that is more necessary than recommended.  In this sec
 
 To add a user, you can run:
 ``` bash
-openstack user create --domain <default domain> --password-prompt <user name>
+openstack user create --password-prompt <user name>
 ```
 This will ask you for a password.  You can pass this information to each user to allow them to access the OpenStack cloud.  To delete a user, it's simply:
 ``` bash
