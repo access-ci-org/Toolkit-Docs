@@ -99,10 +99,10 @@ rabbitmqctl cluster_status
 ```
 Some things to look for here, are any errors or alarms under the [Alarms] section.
 
-	- What rabbitMQ errors look like
-		rabbitMQ errors can be tough to diagnose.  All the openstack services send messages through rabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.
+	- What RabbitMQ errors look like
+		RabbitMQ errors can be tough to diagnose.  All the OpenStack services send messages through RabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.
 	- How to fix
-		The simplest fix is usually going to be a dead rabbitMQ service on one of the nodes.  Usually a restart can fix these.
+		The simplest fix is usually going to be a dead RabbitMQ service on one of the nodes.  Usually a restart can fix these.
 
 #### Mysql
 
