@@ -7,16 +7,16 @@
 #### Floating IP Addresses
 
 Adding in and configuring a subnet of floating IPs can be extremely useful for your users if they would like to have a persistent IP address.  It's also good for administrators as this allows VMs that need to be accessible but not necessarily publicly routable to not use a public IPv4 address, which are becoming increasingly scarce, and simply have them on an internal network.  To set this up, we need to make sure our provider network has the value `router:external` set to `External`.  An easy way to check this with the following:
-``` bash
+``` shell
 openstack network list --provider-network-type flat
 ```
 And checking the network that shows up from that with:
-``` bash
+``` shell
 openstack network show <network name>
 ```
 
 Once that's set, you should make sure that you have a subnet attached to that network that contains the public facing IP address subnet that you have available.  If you need to create the subnet, you can do that with the following:
-``` bash
+``` shell
 openstack subnet create --network <network name> --allocation-pool start=<starting IP address>,end=<ending IP address> --dns-nameserver <dns resolver> --gateway <network gateway> --subnet-range <IP address subnet> <subnet name>
 ```
 This will attach the newly created subnet to the network that's created and also allow users to allocate a floating IP from that range to their VMs.
@@ -27,26 +27,26 @@ This will attach the newly created subnet to the network that's created and also
 [Automatic allocation of network topologies](https://docs.openstack.org/neutron/latest/admin/config-auto-allocation.html) can save a large amount of time for the administrators and/or support personnel by having users simply create a network, router, and subnet with one line, instead of the gratuitously arduous way of creating them one by one with the CLI.  This also supports popular additional interfaces like Exosphere ([link](https://gitlab.com/exosphere/exosphere/#to-use-with-an-openstack-cloud)).  The setup is relatively simple for how much work it cuts out for your users.  
 
 The first step is to ensure you have a default public network setup.  To check this, run:
-``` bash
+``` shell
 openstack network list --external
 ```
 Then if you have any networks listed, verify the `is_default` value when shown with:
-``` bash
+``` shell
 openstack network show <external network name>
 ```
 If it is the default network, you can move on to the next step.  If not, set it to default with:
-``` bash
+``` shell
 openstack network set <external network name> --default
 ```
 
 Now, we need a default subnet pool that the auto-allocated network will use. You can create this with:
-``` bash
+``` shell
 openstack subnet pool create --share --default --pool-prefix 192.168.0.0/16 --default-prefix-length 25 shared-default
 ```
 This will create a default subnet pool using the `192.168.0.0/16` subnet, each carving off a /25 subnet off.  Each subnet will allow 128 different VMs on the network and also allow you to be able to carve off 512 subnets.  You can adjust these numbers if they won't fit your use case.  
 
 Now, your users can create an auto-allocated network with:
-``` bash
+``` shell
 openstack network auto allocated topology create --or-show
 ```
 
@@ -55,37 +55,37 @@ openstack network auto allocated topology create --or-show
 This is probably something that is more necessary than recommended.  In this section, we will go over adding users, allocations, adjusting quotas for specific use cases, etc.  
 
 To add a user, you can run:
-``` bash
+``` shell
 openstack user create --password-prompt <user name>
 ```
 This will ask you for a password.  You can pass this information to each user to allow them to access the OpenStack cloud.  To delete a user, it's simply:
-``` bash
+``` shell
 openstack user delete <user name>
 ```
 
 The newly created user will need a project to operate on as well.  If they don't have a project, you can create one with:
-``` bash
+``` shell
 openstack project create --description "<A good description here>" <project name>
 ```
 
 In OpenStack, you don't simply add a user to a project.  There needs to be a role associaction created, associating the user and the project.  The role itself can be a privileged user or standard user.  If you don't have a standard user role created, you can create one with:
-``` bash
+``` shell
 openstack role create <role name>
 ```
 Role associations are created with:
-``` bash
+``` shell
 openstack role add --project <project name> --user <user name> <role name>
 ```
 
 To remove the role association, run:
-``` bash
+``` shell
 openstack role remove --user <user name> --project <project name> <role name>
 ```
 
 #### Managing Quotas
 
 Oftentimes, different projects or users will have different needs of the OpenStack cloud.  This can lead to the default quotas not allowing them to do something that fits their workflow.  For example, perhaps they need more than the default quota of volumes.  These can be adjusted with the CLI by running:
-``` bash
+``` shell
 openstack quota set --volumes <new volume quota> <project name>
 ```
 Note that quotas are set per project and not per user.
@@ -103,7 +103,7 @@ NTP runs very well and generally, issues stemming from NTP won't arise throughou
 #### RabbitMQ
 
 To check the status of your RabbitMQ cluster, run the following on one of the RabbitMQ nodes:
-``` bash
+``` shell
 rabbitmqctl cluster_status
 ```
 Some things to look for here, are any errors or alarms under the [Alarms] section.
@@ -130,7 +130,7 @@ Throughout the life of your cloud, you may come into issues where the database a
 #### Nova
 
 To check the nova status, source the Admin openrc file or [app credential](https://docs.openstack.org/keystone/yoga/user/application_credentials.html) and run:
-```
+``` shell
 openstack compute service list
 ```
 
@@ -139,23 +139,23 @@ This will list all nova services and show if any are down or not running.  A "XX
 Nova errors will generally be the case where you are getting "No valid hosts available", when there should be hosts available.  This will simply be the case where we see a dead service on some/all nodes.  Running through the checks will show any/all down nodes.  OpenStack won't deploy new VMs to nova-compute services that are down.  Attempting a restart should bring the services back online or show some errors in the logs about what is causing the nova-compute service to go down.
 
 Eventually, you will have to take some compute nodes offline for maintenance in some capacity.  The first thing you want to do, is set those nova-computes to disabled:
-``` bash
+``` shell
 openstack compute service set --disable --disable-reason maintenance <node hostname> nova-compute
 ```
 Then, check to see if the node has VMs running on it.  You can do this with:
-``` bash
+``` shell
 openstack host show <node hostname>
 ```
 If this has any CPU/Memory/Disk used, it probably has VMs running on it and they need to be migrated to other nodes.  We can do this with:
-``` bash
+``` shell
 nova host-evacuate-live <node hostname>
 ```
 This will send the VMs on that node to other available nodes.  To verify this completed, check the node again with:
-``` bash
+``` shell
 openstack host show <node hostname>
 ```
 And verify that it has no VMs running on it. Once they are migrated, the node will be out of production and available for the maintenance required.  After said maintenance is completed, you can bring the node back into production with:
-``` bash
+``` shell
 openstack compute service set --enable <node hostname> nova-compute
 ```
 
@@ -163,7 +163,7 @@ openstack compute service set --enable <node hostname> nova-compute
 
 To check the Neutron services status, source the Admin openrc file or app credential and run:
 
-```
+``` shell
 openstack network agent list
 ```
 
