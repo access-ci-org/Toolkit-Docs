@@ -179,7 +179,13 @@ TODO
 
 ### General Hardware Considerations
 
-TODO
+A common question is: _What kind of computer hardware do I need for an OpenStack cloud?_ Generally, you can use any computers that will run Linux. If you're starting out, you probably want machines with the common **[x86-64](https://en.wikipedia.org/wiki/X86-64) architecture**. (It is possible to deploy a cloud with ARM or some other micro-architecture, but this has implications for the deployment process and use cases, which this guide does not cover.) To support virtual machine instances, the CPUs in the compute nodes **must support [x86 hardware-assisted virtualization](https://en.wikipedia.org/wiki/X86_virtualization)**. This is a very common feature. Most CPUs have it, even in consumer-grade computers.
+
+Also, it is not strictly necessary, but having two physical network ports in each node will be useful as your network architecture grows. The automated deployment guide assumes each node has two network ports. It is easy to add network ports with a PCI Express network interface controller (NIC). In a pinch, for evaluation purposes, you can use an external USB NIC.
+
+To an extent, it is okay to mix and match hardware of different models / configurations. Compute nodes can have differing amounts of CPU cores and memory. Depending on the flavors that you configure, this may lead to sub-optimal "bin-packing" of instances on compute nodes, but the Nova compute agent will detect each node's physical resources and schedule instances accordingly. If your compute nodes use a mix of different-generation CPUs, you may need to [configure CPU models](https://docs.openstack.org/nova/xena/admin/cpu-models.html) so that instance live migration works between the types of nodes.
+
+Beyond that, the hardware that you need will depend on the features, performance, and capacity that you want to deliver to your stakeholders. For example, you need physical GPUs in order to provide GPU-enabled instances (and configuring them is outside the scope of this guide).
 
 ### Choose Your Control Plane
 
