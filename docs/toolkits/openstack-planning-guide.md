@@ -178,7 +178,9 @@ A fully LB/HA control plane can be fully serviced and upgraded in-place with no 
 
 This is an impressive feat, but it comes at the cost of complexity. It is easy for a misconfigured LB/HA service to crash entirely. A Galera SQL cluster or distributed RabbitMQ cluster are more complex to set up and administer than a single-node MySQL or RabbitMQ server. A cloud operator guards against the potential for configuraiton error by carefully testing a LB/HA configuration (and any subsequent configuration changes), and by simulating failures to test failover between backends.
 
-Therefore, LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and many compute nodes. LB/HA is not recommended when you are just getting started, and it is more complex to understand, deploy, manage, and troubleshoot.
+Therefore, LB/HA architecture makes sense for larger clouds with downtime-intolerant workloads and many compute nodes. LB/HA is not recommended when you are just getting started, because it is more complex to understand, deploy, manage, and troubleshoot.
+
+Note that a cloud with a non-LB/HA control plane will need periodic maintenance windows for system and software updates. You can schedule these approximately monthly, or more or less often, depending on your posture toward security and change management. During these maintenance periods, workloads can continue to run, but users won't be able to create or manage resources at the OpenStack level.
 
 ## Key Decisions
 
