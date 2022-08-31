@@ -157,7 +157,14 @@ This guide does not cover setup of a Ceph cluster (or integration of Ceph with O
 
 #### Types of Networking
 
-TODO
+An OpenStack cloud has at least three types of networks. First, there is the node management network. A cloud operator uses this network to connect to and administer the nodes. This can also be the network that the OpenStack APIs are exposed on. For smaller clouds, this is usually a "traditional" computer network without software-defined encapsulation or multi-tenancy.
+
+Second, there are the software-defined Neutron networks for communication between instances and their virtual routers. OpenStack clients make API calls to OpenStack Neutron to manage these networks. Neutron can provide virtual subnets with DHCP servers on these networks. Neutron virtual routers route and NAT traffic between these networks and the outside world. The Nova metadata service is also exposed on these networks, and new instances receive their [cloud-init](https://cloudinit.readthedocs.io/en/latest/index.html) configuration via API calls to the metadata service.
+
+Neutron networks are also called "overlay" or "tunneled" networks, because they use technologies like [VXLAN](https://en.wikipedia.org/wiki/Virtual_Extensible_LAN) to encapsulate an OpenStack project's [OSI](https://en.wikipedia.org/wiki/OSI_model) layer 2 fabric, on top of an underlying layer 3 network.
+
+Third, there is the network containing the floating IP address space. This often (but not always) provides shared access to scarce public IPv4 addresses. Users can reserve floating IP addresses and move them between instances. When attaching a floating IP to an instance, Neutron sets up one-to-one network address translation (NAT) between the floating IP address and the instance's fixed (generally private) IP address.
+
 
 ### Load Balancing and High Availability
 
