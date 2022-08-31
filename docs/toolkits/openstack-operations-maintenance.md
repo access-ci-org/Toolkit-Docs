@@ -70,6 +70,8 @@ To remove the role association, run:
 openstack role remove --user <user name> --project <project name> <role name>
 ```
 
+#### Managing Quotas
+
 Oftentimes, different projects or users will have different needs of the OpenStack cloud.  This can lead to the default quotas not allowing them to do something that fits their workflow.  For example, perhaps they need more than the default quota of volumes.  These can be adjusted with the CLI by running:
 ``` bash
 openstack quota set --volumes <new volume quota> <project name>
