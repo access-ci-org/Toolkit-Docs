@@ -56,7 +56,7 @@ The newly created user will need a project to operate on as well.  If they don't
 openstack project create --description "<A good description here>" <project name>
 ```
 
-In OpenStack, you don't simply add a user to a project.  There needs to be a role associaction created, associating the user and the project.  The role itself can be a priviledged user or standard user.  If you don't have a standard user role created, you can create one with:
+In OpenStack, you don't simply add a user to a project.  There needs to be a role associaction created, associating the user and the project.  The role itself can be a privileged user or standard user.  If you don't have a standard user role created, you can create one with:
 ``` bash
 openstack role create <role name>
 ```
