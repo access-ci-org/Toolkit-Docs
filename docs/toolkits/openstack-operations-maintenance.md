@@ -120,12 +120,12 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 ```
 And verify the cluster count matches the number of nodes in your database cluster.
 
-	- What MYSQL errors look like
-		If MYSQL is causing issues, you'll usually get a 503 error when attempting to run commands from the CLI.
+	- What MySQL errors look like
+		If MySQL is causing issues, you'll usually get a 503 error when attempting to run commands from the CLI.
 	- How to fix
-		This could be as simple as a dead mysql daemon on one of your nodes.  You can diagnose this by running through the checks above.  
+		This could be as simple as a dead `mysql` daemon on one of your nodes.  You can diagnose this by running through the checks above.  
 	- Database Discrepancies
-		Throughout the life of your cloud, you may come into issues where the database and openstack reflect different information.  This could be a VM that shows a host on one machine but it's actually on another, a volume that is stuck in a `reserved` state but won't change back to active/available, etc.  To fix this, we need to log into the MYSQL cluster by running `mysql` and updating the discrepancy with `update ITEM set VALUE=DESIRED_VALUE  where id='UUID';`.  You can verify which specific item(s) you'll adjust by adjusting the formula to, `show ITEM where id='UUID';`.
+		Throughout the life of your cloud, you may come into issues where the database and OpenStack reflect different information.  This could be a VM that shows a host on one machine but it's actually on another, a volume that is stuck in a `reserved` state but won't change back to active/available, etc.  To fix this, we need to log into the MySQL cluster by running `mysql` and updating the discrepancy with `update ITEM set VALUE=DESIRED_VALUE  where id='UUID';`.  You can verify which specific item(s) you'll adjust by adjusting the formula to, `show ITEM where id='UUID';`.
 
 #### Nova
 
