@@ -104,10 +104,10 @@ Some things to look for here, are any errors or alarms under the [Alarms] sectio
 	- How to fix
 		The simplest fix is usually going to be a dead RabbitMQ service on one of the nodes.  Usually a restart can fix these.
 
-#### Mysql
+#### MySQL
 
 	- Checks for a single node database:
-SSH to the MYSQL node and log into the database with:
+SSH to the MySQL node and log into the database with:
 `mysql`
 Also, you can check the logs to make sure there are no discrepancies.
 
