@@ -52,6 +52,10 @@ It should not be under-stated how convenient it is to have someone else maintain
 
 For smaller organizations, and organizations with less technology-demanding missions, savvy consumption of commercial cloud services may support the mission more efficiently than building and operating an OpenStack cloud in-house. Researchers at US-based organizations may also qualify for an allocation on [Jetstream2](https://jetstream-cloud.org), a national-scale, production-quality OpenStack cloud for science and engineering research.
 
+### Are there any simpler options than OpenStack, for an on-premises cloud?
+
+An OpenStack cloud may incur more overhead than it's worth if you have only a few modest-sized projects to support, and your users don't require a self-service way to configure virtual IT resources. To support this, you can set up virtual machines on a server or other computer. [virt-manager](https://virt-manager.org) or [VirtualBox](https://en.wikipedia.org/wiki/VirtualBox) provide an approachable way to do this, and [Proxmox](https://en.wikipedia.org/wiki/Proxmox_Virtual_Environment) is a bit more capable (yet complex).
+
 ### Which skills do I need to build a cloud?
 
 To build a basic cloud with this guide, you need basic Linux systems administrator skills. These are detailed in the [OpenStack Automated Installation Guide](openstack-automated-installation.md#prerequisite-skills).
