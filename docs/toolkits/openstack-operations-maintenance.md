@@ -98,7 +98,7 @@ Some things to look for here, are any errors or alarms under the [Alarms] sectio
 
 Other RabbitMQ errors can be tough to diagnose.  All the OpenStack services send messages through RabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.  If you are seeing something akin to this, be sure to check your RabbitMQ cluster with the check command.  If you find that this is indeed the cause, generally a dead RabbitMQ service on one of the nodes is the cause.  Try restarting the service or check the logs to find out what caused the service itself to become inactive.
 
-#### MySQL
+#### MySQL (a.k.a. MariaDB)
 
 To check the status of a MySQL cluster, SSH to the MySQL node and log into the database with:
 `mysql`
