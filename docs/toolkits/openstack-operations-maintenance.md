@@ -137,7 +137,7 @@ openstack compute service list
 
 This will list all nova services and show if any are down or not running.  A "XXX" status simply means that service has missed a heartbeat message in rabbitmq to the control node.  A "down" status means the service has missed enough to be considered off or problematic.
 	- What Nova errors look like
-		Nova errors will generally be the case where you are getting "No valid hosts available" when their should be.
+		Nova errors will generally be the case where you are getting "No valid hosts available", when there should be hosts available.
 	- How to Fix
 		This will simply be the case where we see a dead service on some/all nodes.  Running through the checks will show any/all down nodes.  OpenStack won't deploy new VMs to nova-compute services that are down.  Attempting a restart should bring the services back online or show some errors in the logs about what is causing the nova-compute service to go down.
 	- How to take down nodes for maintenance
