@@ -12,7 +12,7 @@ TO-DO: add in steps for this. It should just be "create a pool" but I don't thin
 
 #### Auto-allocated Network
 
-The auto-allocated network can save a large amount of time for the administrators and/or support personnel by having users simply create a network/router/subnet with one line instead of the gratuitously arduous way of creating them one by one with the CLI.  This is also necessary to be activated for popular additional interfaces like Exosphere [TO-DO: include link here].  The setup is relatively simple for how much work it cuts out for your users.  
+[Automatic allocation of network topologies](https://docs.openstack.org/neutron/latest/admin/config-auto-allocation.html) can save a large amount of time for the administrators and/or support personnel by having users simply create a network, router, and subnet with one line, instead of the gratuitously arduous way of creating them one by one with the CLI.  This also supports popular additional interfaces like Exosphere ([link](https://gitlab.com/exosphere/exosphere/#to-use-with-an-openstack-cloud)).  The setup is relatively simple for how much work it cuts out for your users.  
 
 The first step is to ensure you have a default public network setup.  To check this, run:
 ``` bash
