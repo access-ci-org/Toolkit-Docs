@@ -153,7 +153,7 @@ If this has any CPU/Memory/Disk used, it probably has VMs running on it and they
 ``` bash
 nova host-evacuate-live <node hostname>
 ```
-This will send the VMs on that node to other availabe nodes.  Once this completes, the node will be out of production and available for the maintenance required.  After said maintenance is completed, you can bring the node back into production with:
+This will send the VMs on that node to other available nodes.  Once this completes, the node will be out of production and available for the maintenance required.  After said maintenance is completed, you can bring the node back into production with:
 ``` bash
 openstack compute service set --enable <node hostname> nova-compute
 ```
