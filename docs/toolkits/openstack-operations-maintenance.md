@@ -85,34 +85,25 @@ Note that quotas are set per project and not per user.
 ---
 
 #### NTP
-	- What NTP Errors look like
-		The biggest offender here is going to be any clock drift errors in the logs and odd behavior by computes on some isolated VMs.
-	- How to fix
-		Usually this is either two issues.  First, the time daemon running on your node may simply need a restart.  The second is that it could simply be a misconfiguration on said time daemon.
+
+NTP runs very well and generally, issues stemming from NTP won't arise throughout the life of the cloud.  However, there can be the situation where there are clock drift errors in the logs and also odd behavior by compute nodes and their VMs.  Usually this is either two issues.  First, the time daemon running on your node may simply need a restart.  The second is that it could simply be a misconfiguration on said time daemon.  NTP configuration is outside the scope of this guide, but check the manuals for your specific time daemon for more information.
 
 #### RabbitMQ
 
-	- Checks:
-		To check the status of your RabbitMQ cluster, run the following on one of the rabbitmq nodes:
+To check the status of your RabbitMQ cluster, run the following on one of the RabbitMQ nodes:
 ``` bash
 rabbitmqctl cluster_status
 ```
 Some things to look for here, are any errors or alarms under the [Alarms] section.
 
-	- What RabbitMQ errors look like
-		RabbitMQ errors can be tough to diagnose.  All the OpenStack services send messages through RabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.
-	- How to fix
-		The simplest fix is usually going to be a dead RabbitMQ service on one of the nodes.  Usually a restart can fix these.
+Other RabbitMQ errors can be tough to diagnose.  All the OpenStack services send messages through RabbitMQ, so there is a broad range of errors that an administrator can come across while trying to determine the cause.  If you are seeing something akin to this, be sure to check your RabbitMQ cluster with the check command.  If you find that this is indeed the cause, generally a dead RabbitMQ service on one of the nodes is the cause.  Try restarting the service or check the logs to find out what caused the service itself to become inactive.
 
 #### MySQL
 
-	- Checks for a single node database:
-SSH to the MySQL node and log into the database with:
+To check the status of a MySQL cluster, SSH to the MySQL node and log into the database with:
 `mysql`
 Also, you can check the logs to make sure there are no discrepancies.
-
-	- Checks for a multiple node cluster:
-SSH to the MySQL node and log into the database with:
+If you are running a multi-node MySQL cluster, you can also check each node at once by SSHing into a MySQL node and log into the database with:
 `mysql`
 and run
 ```
@@ -120,12 +111,9 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 ```
 And verify the cluster count matches the number of nodes in your database cluster.
 
-	- What MySQL errors look like
-		If MySQL is causing issues, you'll usually get a 503 error when attempting to run commands from the CLI.
-	- How to fix
-		This could be as simple as a dead `mysql` daemon on one of your nodes.  You can diagnose this by running through the checks above.  
-	- Database Discrepancies
-		Throughout the life of your cloud, you may come into issues where the database and OpenStack reflect different information.  This could be a VM that shows a host on one machine but it's actually on another, a volume that is stuck in a `reserved` state but won't change back to active/available, etc.  To fix this, we need to log into the MySQL cluster by running `mysql` and updating the discrepancy with `update ITEM set VALUE=DESIRED_VALUE  where id='UUID';`.  You can verify which specific item(s) you'll adjust by adjusting the formula to, `show ITEM where id='UUID';`.
+If MySQL is causing issues, you'll likely receive a 503 error when attempting to run commands from the CLI. This could be as simple as a dead `mysql` daemon on one of your nodes.  You can diagnose this by running through the checks above.  
+
+Throughout the life of your cloud, you may come into issues where the database and OpenStack reflect different information.  This could be a VM that shows a host on one machine but it's actually on another, a volume that is stuck in a `reserved` state but won't change back to active/available, etc.  To fix this, we need to log into the MySQL cluster by running `mysql` and updating the discrepancy with `update ITEM set VALUE=DESIRED_VALUE  where id='UUID';`.  You can verify which specific item(s) you'll adjust by adjusting the formula to, `show ITEM where id='UUID';`.
 
 #### Nova
 
