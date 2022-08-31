@@ -194,15 +194,15 @@ Beyond that, the hardware that you need will depend on the features, performance
 
 ### Choose Your Control Plane
 
-TODO
+This guide uses a simple, single-node control plane. This is easiest for a new cloud operator to configure and maintain. If your cloud grows to support critical downtime-intolerant workloads, you might consider building out a load-balanced, highly-available control plane, described in the section above.
 
 ### Choose Your Storage Layout
 
-TODO
+This guide uses a simple storage layout: instance root disks are stored on the root disk of the compute node where they run, and Glance images are stored on the control plane host. No extra storage infrastructure is needed. As your cloud use evolves, you may want to move to a shared or distributed storage system, as described in the Storage section above.
 
 ### Choose Your Network Layout
 
-TODO
+This guide sets up a basic host management network, software-defined Neutron networks, and floating IP address space. From this starting point, you may customize your cloud for your organization's particular network environment.
 
 ### Choose Your Deployment Method and Operating System
 
