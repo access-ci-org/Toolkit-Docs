@@ -6,7 +6,7 @@
 
 #### Floating IP Addresses
 
-Adding in and configuring a subnet of floating IPs can be extremely useful for your users if they would like to have a persistent IP address.  It's also good for administrators as this allows VMs that need to be accessible but not necessarily publicly routable to not use an IP address, which are becoming increasingly scarce, and simply have them on an internal network.  To set this up, we do the following:
+Adding in and configuring a subnet of floating IPs can be extremely useful for your users if they would like to have a persistent IP address.  It's also good for administrators as this allows VMs that need to be accessible but not necessarily publicly routable to not use a public IPv4 address, which are becoming increasingly scarce, and simply have them on an internal network.  To set this up, we do the following:
 
 TO-DO: add in steps for this. It should just be "create a pool" but I don't think documentation exists.
 
