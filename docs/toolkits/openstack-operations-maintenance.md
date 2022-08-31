@@ -118,7 +118,7 @@ Throughout the life of your cloud, you may come into issues where the database a
 #### Nova
 
 	- Checks:
-To check the nova status, source the Admin openrc file or app credential and run:
+To check the nova status, source the Admin openrc file or [app credential](https://docs.openstack.org/keystone/yoga/user/application_credentials.html) and run:
 ```
 openstack compute service list
 ```
