@@ -141,6 +141,12 @@ The API reverse proxy service (generally HAProxy) has a few related jobs. HAProx
 
 Finally, the named OpenStack services comprise the top layer of the control plane. This is the layer that API clients interact with.
 
+### Types of Nodes
+
+All but the smallest OpenStack cloud will have multiple types of physical computers (nodes), each with a dedicated purpose. Generally, _Control plane nodes_ host infrastructure services and OpenStack services, including OpenStack API back-ends. _Compute nodes_ host the virtualization hypervisor and virtual machines (instances).
+
+On a larger cloud, there may be dedicated _storage nodes_ for a Ceph cluster. There may also be specialized types of control plane nodes, e.g., one group of nodes for the SQL database cluster and message broker, another group of nodes for the OpenStack services, and another node to collect and store centralized logs from all the services. This specialization starts to make sense as your cloud supports more demanding workloads.
+
 #### Types of Storage
 
 An OpenStack cloud can offer several kinds of data storage for different workloads and use cases.
