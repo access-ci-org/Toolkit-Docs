@@ -12,4 +12,4 @@ If you are unfamiliar with Git, please check out the Git Book:
 <https://git-scm.com/book/en/v2>
 
 For changes to this documentation, please feel free to open issues at
-<https://github.com/access-ci-org/XCRI-Docs>
+<https://github.com/access-ci-org/Toolkit-Docs>

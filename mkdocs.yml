@@ -2,7 +2,7 @@ site_name: ACCESS Toolkit Docs
 site_url: https://readthedocs.access-ci.org
 site_description: ACCESS Toolkit documentation
 
-repo_url: https://github.com/access-ci-org/XCRI-Docs
+repo_url: https://github.com/access-ci-org/Toolkit-Docs
 edit_uri: "edit/main/docs"
 
 docs_dir: docs

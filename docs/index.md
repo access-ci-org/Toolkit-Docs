@@ -28,4 +28,4 @@ of usage based on users, projects, and job types, which can be a great
 aid in keeping track of ROI or justifying future funding.
 
 ## Presentations
-Slides from our SC18 booth presentation [are available here](https://github.com/XSEDE/XCRI-Docs/raw/main/files/SC18-XCRI-Booth-Talk.pdf).
+Slides from our SC18 booth presentation [are available here](https://github.com/access-ci-org/Toolkit-Docs/raw/main/files/SC18-XCRI-Booth-Talk.pdf).
