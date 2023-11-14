@@ -20,7 +20,7 @@ To build your own Virtual cluster, starting on your localhost:
 1. If you don't already have an openrc file, see the 
    [Jetstream Wiki](https://wiki.jetstream-cloud.org).
 
-1. Clone the [Virtual Cluster repository](https://github.com/access-ci-org/CRI_Jetstream_Cluster/).
+1. Clone the [Virtual Cluster repository](https://github.com/access-ci-org/Jetstream_Cluster/).
 
 1. Copy the openrc for the allocation in which you'd like to create a 
    virtual cluster to this repo. A file 
