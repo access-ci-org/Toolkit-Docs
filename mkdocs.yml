@@ -7,7 +7,7 @@ edit_uri: "edit/main/docs"
 
 docs_dir: docs
 
-pages:
+nav:
 - Home: 'index.md'
 - Toolkits:
   - XCBC: 
