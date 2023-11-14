@@ -1,11 +1,11 @@
 Overview
 ========
 
-While the basic XCBC Installation provides for a standard compute image, it's often the case
+While the basic BC Installation provides for a standard compute image, it's often the case
 that HPC systems rely on heterogeneous architectures, which can require different node images. Some
 sites may also wish to provide separate visualization or login nodes.
 
-Additional roles in the XCBC exist for building two other predefined node types: Login, and GPU nodes. 
+Additional roles in the BC exist for building two other predefined node types: Login, and GPU nodes. 
 These each may require site-specific configuration, but act as guides for setting up these more customized 
 appliances.
 

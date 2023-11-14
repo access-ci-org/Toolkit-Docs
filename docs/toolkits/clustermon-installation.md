@@ -1,4 +1,4 @@
-# The XCRI Cluster Monitoring Toolkit
+# The Cluster Monitoring Toolkit
 
 This toolkit provides two main tools for monitoring the
 state and useage of your cluster: 
@@ -11,9 +11,6 @@ OpenXDMoD is used to aggregate scheduler data into reports,
 and investigate useage metrics across departments, projects, or PIs.
 This can be very useful in applying for additional funding, or
 working to improve the general health of your research computing program.
-
-If you run into any problems with this guide, please contact us at
-help@xsede.org.
 
 ## Ansible Playbook
 

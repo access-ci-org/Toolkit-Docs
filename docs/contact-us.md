@@ -1,9 +1,7 @@
-# XCRI Contact Information
+# ACCESS Contact Information
 
-Email: help@xsede.org - please put XCRI in the subject!
+Open a ticket at:
+<https://support.access-ci.org/help-ticket>
 
-More information is available at:
-<https://xsede.org/xcri>
-
-Our github contains the source for all of our toolkits:
-<https://github.com/XSEDE/>
+Our GitHub contains the source for all of our toolkits:
+<https://github.com/access-ci-org/>

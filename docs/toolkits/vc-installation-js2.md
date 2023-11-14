@@ -21,7 +21,7 @@ an virtual machine created from the Rocky Linux base image in Jestream 2 before 
 2. Move to the rocky user if you are in a different user. ```sudo su - rocky```
 3. If you have not already done, create an openrc fire for your jetsream2 account by following the [Jestream 2 Documentation](https://docs.jetstream-cloud.org/ui/cli/openrc/)
 4. Copy the generated openrc file to the home directory of rocky user
-5. Clone the [XCRI Virtual Cluster repository](https://github.com/XSEDE/CRI_Jetstream_Cluster) and checkout branch rocky-linux
+5. Clone the [Virtual Cluster repository](https://github.com/access-ci-org/CRI_Jetstream_Cluster/) and checkout branch rocky-linux
 6. If you'd like to modify your cluster, now is a good time!
 
    * The number of nodes can be set in the slurm.conf file, by editing

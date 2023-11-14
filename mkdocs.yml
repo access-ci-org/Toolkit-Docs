@@ -1,8 +1,8 @@
-site_name: XCRI Toolkit Docs
-site_url: https://xsede.org/xcri
-site_description: XCRI Toolkit documentation
+site_name: ACCESS Toolkit Docs
+site_url: https://readthedocs.access-ci.org
+site_description: ACCESS Toolkit documentation
 
-repo_url: https://github.com/XSEDE/XCRI-Docs
+repo_url: https://github.com/access-ci-org/XCRI-Docs
 edit_uri: "edit/main/docs"
 
 docs_dir: docs
@@ -10,11 +10,11 @@ docs_dir: docs
 nav:
 - Home: 'index.md'
 - Toolkits:
-  - XCBC: 
-    - RHEL 8 Installation Tutorial: 'toolkits/xcbc-2.0-installation.md'
-    - RHEL 7 Installation Tutorial: 'toolkits/xcbc-installation.md'
+  - Basic Cluster: 
+    - RHEL 8 Installation Tutorial: 'toolkits/bc-2.0-installation.md'
+    - RHEL 7 Installation Tutorial: 'toolkits/bc-installation.md'
     - GPU Node Build: 'toolkits/gpu-nodes.md'
-    - Custom Node Images: 'toolkits/xcbc-new-image.md'
+    - Custom Node Images: 'toolkits/bc-new-image.md'
     - Slurmdbd Configuration: 'toolkits/slurmdbd-config.md'
     - AD Integration: 'toolkits/ActiveDirectoryIntegration.md'
   - Cluster Monitoring Toolkit: 

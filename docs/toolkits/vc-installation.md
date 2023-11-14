@@ -3,8 +3,8 @@
 ## Intro
 
 This repo contains scripts and ansible playbooks for creating a virtual 
-cluster in an Openstack environment, specifically aimed at the XSEDE 
-Jetstream resource.
+cluster in an Openstack environment, specifically aimed at the ACCESS 
+Jetstream2 resource.
 
 The basic structure is to have a single instance act as headnode, with
 compute nodes managed by SLURM via the openstack API.
@@ -20,7 +20,7 @@ To build your own Virtual cluster, starting on your localhost:
 1. If you don't already have an openrc file, see the 
    [Jetstream Wiki](https://wiki.jetstream-cloud.org).
 
-1. Clone the [XCRI Virtual Cluster repository](https://github.com/XSEDE/CRI_Jetstream_Cluster).
+1. Clone the [XCRI Virtual Cluster repository](https://github.com/access-ci-org/CRI_Jetstream_Cluster/).
 
 1. Copy the openrc for the allocation in which you'd like to create a 
    virtual cluster to this repo. A file 
