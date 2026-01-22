@@ -2,7 +2,7 @@
 
 Welcome to the main documentation site for the ACCESS Toolkits. Here, you'll find descriptions and documentation for the various toolkits we provide to computational resource providers and users.
 
-## Mirgation Notice
+## Migration Notice
 
 This documentation was migrated and re-branded to ACCESS from the [XSEDE project](https://www.xsede.org/). It was originally developed by the XSEDE [Cyberinfrastructure Resource Integration (CRI)](https://web.archive.org/web/20220819194201/https://www.xsede.org/ecosystem/xcri-mission) team.
 
